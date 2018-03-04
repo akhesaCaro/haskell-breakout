@@ -13,6 +13,7 @@ module CollisionDetection
     TopSide | BottomSide | LeftSide | RightSide
     deriving Show
 
+
   -- | Given position and radius of the ball, return nothing if there is
   --   no collision or the collisionSide.
   wallsCollision :: Position                -- ^ ball position
