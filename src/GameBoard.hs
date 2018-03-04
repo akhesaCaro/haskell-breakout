@@ -32,6 +32,10 @@ module GameBoard
   wallWidth = 10
   brickWidth = 100
 
+  -- | speed ration (when the ball hits a brick)
+  speedRatio :: Float
+  speedRatio = 1.5
+
   -- | all the widths : brick, wall, game
   gameHeight, brickHeight :: Height
   gameHeight = 800
