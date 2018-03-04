@@ -55,7 +55,7 @@ module Rendering
       , mkWall wallColor wallWidth gameHeight wallLeftPos
       , mkWall wallColor wallWidth gameHeight wallRightPos
       , pictures . fmap mkBrick $ bricks game
-      , mkPaddle paddleColor paddleWidth paddleHeight (paddlePos game)
+      , mkPaddle paddleColor paddleWidth paddleHeight (paddleLoc $ paddle game)
       ]
       where
         wallColor = blue

@@ -88,4 +88,28 @@ module Physics
       Just RightSide  -> game { ballVel = (-vx, vy)}
     where
       (vx, vy) = ballVel game
-      pc = paddleCollision (ballLoc game) ballRadius (paddlePos game) paddleWidth paddleHeight
+      pc = paddleCollision (ballLoc game) ballRadius (paddleLoc $ paddle game) paddleWidth paddleHeight
+
+
+  -- | Update the paddle position
+  movePaddle :: Game  -- ^ Initial game state
+             -> Game  -- ^ Game paddle position updated
+  movePaddle game
+        -- | No step , no mouvement
+        | vel == 0 = game
+        -- | Lefter than left wall, but trying to go right.
+        | x - paddleWidth / 2  <= -(gameWidth / 2) && vel > 0 =
+          let newLoc = (x + (paddleStep *  vel), y) in
+          game { paddle = (paddle game) { paddleLoc = newLoc }}
+        -- | Righter than right wall , but trying to go left.
+        | x + paddleWidth / 2 >= gameWidth / 2 && vel < 0 =
+          let newLoc = (x + (paddleStep *  vel), y) in
+          game { paddle = (paddle game) { paddleLoc = newLoc }}
+        -- | Between the two walls
+        | x - paddleWidth / 2 > -(gameWidth / 2) && x + paddleWidth / 2 < gameWidth / 2 =
+          let newLoc = (x + (paddleStep *  vel), y) in
+          game { paddle = (paddle game) { paddleLoc = newLoc }}
+        | otherwise = game
+        where
+          (x, y) = paddleLoc $ paddle game
+          vel = fst $ paddleVel $ paddle game

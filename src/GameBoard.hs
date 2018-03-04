@@ -37,11 +37,19 @@ module GameBoard
   speedRatio :: Float
   speedRatio = 1.5
 
+<<<<<<< ef207458608785b7998e8f3d8c39008da8a43327
   -- | all the widths : brick, wall, game
   gameHeight, brickHeight, paddleHeight :: Height
   gameHeight = 800
   brickHeight = 40
   paddleHeight = 10
+=======
+  brickWidth, brickHeight, speedRatio, paddleStep :: Float
+  brickWidth = 100
+  brickHeight = 40
+  speedRatio = 1.5
+  paddleStep = 5
+>>>>>>> Better collision with paddle and walls limit
 
   -- | Radius of the ball
   ballRadius :: Radius
@@ -57,6 +65,7 @@ module GameBoard
 
   -- | aliases
   type Radius = Float
+  type Velocity = (Float, Float)
   type Position = (Float, Float)
   type Width = Float
   type Height = Float
@@ -67,12 +76,18 @@ module GameBoard
         , brickCol :: Color          -- ^ brick color
         } deriving Show
 
+  -- | Paddle
+  data Paddle = Paddle
+    { paddleLoc :: Position   -- ^ paddle (x, y) location
+    , paddleVel :: Velocity   -- ^ paddle velocity
+    } deriving Show
+
   -- | Game
   data Game = Game
     { ballLoc :: Position     -- ^ ball (x, y) location.
-    , ballVel :: Position     -- ^ ball (x, y) velocity
+    , ballVel :: Velocity     -- ^ ball (x, y) velocity
     , bricks :: [Brick]       -- ^ bricks list
-    , paddlePos :: Position   -- ^ paddle position
+    , paddle :: Paddle         -- ^ paddle
     } deriving Show
 
   -- | initial state of the game
@@ -87,5 +102,7 @@ module GameBoard
                , Brick {brickLoc = (-200, 100), brickCol = yellow}
                , Brick {brickLoc = (-250, -250), brickCol = yellow}
                ]
-    , paddlePos = (0,-(gameHeight / 2) + 50)
+    , paddle = Paddle { paddleLoc = (0,-(gameHeight / 2) + 50)
+                      , paddleVel = (0,0)
+                      }
     }
