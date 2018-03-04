@@ -1,6 +1,11 @@
 module CollisionDetection where
 
+  import Debug.Trace
   import GameBoard
+
+  data CollisionSide =
+    TopSide | BottomSide | LeftSide | RightSide
+    deriving Show
 
   data WallCollisionType =
     TopWall | BottomWall | LeftWall | RightWall
@@ -21,16 +26,20 @@ module CollisionDetection where
 
   -- | Given position and radius of the ball, return whether
   --   a collision occurred on the brick
-  brickCollision :: Position      -- ^ ball position
+  bricksCollision :: Position      -- ^ ball position
                  -> Radius        -- ^ ball radius
-                 -> Brick         -- ^ the brick
-                 -> Maybe Brick   -- ^ the brick if it still exists
-  brickCollision ballL ballR brick =
-      if rectangleCircleCollision ballL ballR (rectX - brickWidth / 2, rectY - brickHeight / 2) brickWidth brickHeight
-        then Nothing
-        else Just brick
-      where
-        (rectX, rectY) = brickLoc brick
+                 -> [Brick]         -- ^ bricks List
+                 -> (Maybe CollisionSide, [Brick])   -- ^ CollisionSide
+  bricksCollision ballL ballR bricks = go ballL ballR bricks (Nothing,[])
+            where go :: Position -> Radius -> [Brick] -> (Maybe CollisionSide, [Brick]) -> (Maybe CollisionSide, [ Brick ])
+                  go _ _ [] resp = resp
+                  go ballL ballR (b:bs) (col, brickLts) =
+                      case collision of
+                        Nothing   -> go ballL ballR bs (col, b:brickLts)
+                        _ -> (collision, brickLts ++ bs)
+                      where
+                        collision = rectangleCircleCollision ballL ballR (brickX - brickWidth / 2, brickY - brickHeight / 2) brickWidth brickHeight
+                        (brickX, brickY) = brickLoc b
 
 
   -- | Given position and raidus of the ball, return whether
@@ -39,11 +48,30 @@ module CollisionDetection where
                            -> Radius      -- ^ ball radius
                            -> Position    -- ^ rectangle bottom left position
                            -> Width       -- ^ rectangle width
-                           -> Height      -- ^ rectangle Height
-                           -> Bool        -- ^ collision?
+                           -> Height           -- ^ rectangle Height
+                           -> Maybe CollisionSide   -- ^ collision side
   rectangleCircleCollision (ballX, ballY) ballR
-    (rectX, rectY) rectW rectH =
-      (deltaX * deltaX + deltaY * deltaY) < (ballR * ballR)
+    (rectX, rectY) rectW rectH
+          | not collision = Nothing
+          -- somewhere lefter than left side of the rectangle
+          | nearestX < rectX = Nothing
+          -- somewhere righter than right side of the rectangle
+          | nearestX > rectX + rectW = Nothing
+          -- somewhere on top side of the rectangle
+          | nearestY < rectY = Nothing
+          -- somewhere under bottom side
+          | nearestY > rectY + rectH = Nothing
+          -- collision on Top
+          | nearestY <= rectY + rectH = Just TopSide
+          -- collision on Bottom
+          | nearestY >= rectY = Just BottomSide
+          -- collision on Left
+          | nearestX <= rectX = Just LeftSide
+          --collision on Right
+          | nearestX >= rectX + rectW = Just RightSide
           where
-            deltaX = ballX - max rectX (min ballX (rectX + rectW))
-            deltaY = ballY - max rectY (min ballY (rectY + rectW))
+            collision = (deltaX * deltaX + deltaY * deltaY) < (ballR * ballR)
+            deltaX = ballX - nearestX
+            deltaY = ballY - nearestY
+            nearestX = max rectX (min ballX (rectX + rectW))
+            nearestY = max rectY (min ballY (rectY + rectW))

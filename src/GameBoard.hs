@@ -57,5 +57,7 @@ module GameBoard where
                , Brick {brickLoc = (0, 0), brickCol = blue}
                , Brick {brickLoc = (50, 50), brickCol = magenta}
                , Brick {brickLoc = (0, 300), brickCol = white}
+               , Brick {brickLoc = (-200, 100), brickCol = yellow}
+               , Brick {brickLoc = (-250, -250), brickCol = cyan}
                ]
     }

@@ -51,7 +51,18 @@ module Physics where
   --   update the bricks list
   bricksBounce :: Game  -- ^ Initial game state
                -> Game  -- ^ A new game state with an updated bricks
-  bricksBounce game = game {bricks = bricksUpdated}
+  bricksBounce game =
+      case fst bc of
+        Nothing         -> game
+        Just TopSide    -> game {bricks = bricksUpdated, ballVel = (vx, -vy)}
+        Just BottomSide -> game {bricks = bricksUpdated, ballVel = (vx, -vy)}
+        Just LeftSide   -> game {bricks = bricksUpdated, ballVel = (-vx, vy)}
+        Just RightSide  -> game {bricks = bricksUpdated, ballVel = (-vx, vy)}
       where
-        bricksUpdated = catMaybes . fmap (brickCollision (ballLoc game) ballRadius)
-          $  bricks game
+      (vx, vy) = ballVel game
+      bc = bricksCollision (ballLoc game) ballRadius (bricks game)
+      bricksUpdated = snd bc
+
+
+
+--game {bricks = bricksUpdated, ballVel = (vx', vy')}
