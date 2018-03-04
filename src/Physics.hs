@@ -31,25 +31,6 @@ module Physics where
       x' = x + vx * seconds
       y' = y + vy * seconds
 
-
-  -- -- | Detect a collision with a paddle. Upon collisions,
-  -- -- change the velocity of the ball to bounce it off the paddle.
-  -- paddleBounce :: Game  -- ^ The initial game state
-  --              -> Game  -- ^ A new game state with an updated ball velocity
-  --
-  -- paddleBounce game = game { ballVel = (vx', vy) }
-  --   where
-  --       (vx, vy) = ballVel game
-  --
-  --       vx' = if paddleCollision game
-  --             then
-  --                 -- Update the velocity
-  --                 (-vx)
-  --
-  --                 else
-  --                 -- Do nothing.Return te old velocity
-  --                 vx
-
   -- | Detect a collision with one of the side walls. Upon collisions,
   -- update the velocity of the ball to bounce it off the wall.
   wallBounce :: Game  -- ^ The initial game state
@@ -65,3 +46,12 @@ module Physics where
     where
       (vx, vy) = ballVel game
       c = wallsCollision (ballLoc game) ballRadius gameWidth gameHeight
+
+  -- | Detect a collision with one a the bricks still present. Upon collisions,
+  --   update the bricks list
+  bricksBounce :: Game  -- ^ Initial game state
+               -> Game  -- ^ A new game state with an updated bricks
+  bricksBounce game = game {bricks = bricksUpdated}
+      where
+        bricksUpdated = catMaybes . fmap (brickCollision (ballLoc game) ballRadius)
+          $  bricks game

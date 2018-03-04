@@ -6,8 +6,8 @@ module GameBoard where
   offset = 100
 
   winHeight, winWidth :: Int
-  winWidth = floor (gameWidth + wallWidth)
-  winHeight = floor (gameHeight + wallWidth)
+  winWidth = floor (gameWidth + wallWidth * 2)
+  winHeight = floor (gameHeight + wallWidth * 2)
 
   gameWidth, wallWidth :: Width
   gameWidth = 800
@@ -28,7 +28,7 @@ module GameBoard where
   wallDownPos = (0,-(gameHeight/ 2))   -- ^ botom wall position
   wallLeftPos = (gameWidth / 2 , 0)      -- ^ left wall position
   wallRightPos = (-(gameWidth / 2), 0)  -- ^ right wall position
-      
+
   -- * aliases
   type Radius = Float
   type Position = (Float, Float)
@@ -53,5 +53,9 @@ module GameBoard where
   initialState = Game
     { ballLoc = (0, 0)
     , ballVel = (40, -140)
-    , bricks = [Brick {brickLoc = (-300, 300), brickCol = yellow}]
+    , bricks = [ Brick {brickLoc = (-300, 300), brickCol = yellow}
+               , Brick {brickLoc = (0, 0), brickCol = blue}
+               , Brick {brickLoc = (50, 50), brickCol = magenta}
+               , Brick {brickLoc = (0, 300), brickCol = white}
+               ]
     }
