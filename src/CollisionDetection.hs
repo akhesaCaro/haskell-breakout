@@ -52,15 +52,30 @@ module CollisionDetection
                                   brickWidth brickHeight
                         (brickX, brickY) = brickLoc b
 
+  -- | Given position and radius of the ball, return whether a
+  --   collision occured on the paddle
+  paddleCollision :: Position      -- ^ ball position
+                  -> Radius        -- ^ ball radius
+                  -> Position      -- ^ paddle position
+                  -> Width         -- ^ paddle width
+                  -> Height        -- ^ paddle height
+                  -> Maybe CollisionSide -- ^ collision side if collision
+  paddleCollision = rectangleCircleCollision
 
+<<<<<<< f7eb4ebc3c3ca74df6ca8b92b6f647c67584fcc3
   -- | Given position and raidus of the ball return nothing if there is
   --   no collision or the collisionSide
+=======
+
+  -- | Given position and radius of the ball, return whether
+  --   a collision occurred on the rectangle
+>>>>>>> paddle collision
   rectangleCircleCollision :: Position    -- ^ ball position
                            -> Radius      -- ^ ball radius
                            -> Position    -- ^ rectangle bottom left position
                            -> Width       -- ^ rectangle width
                            -> Height           -- ^ rectangle Height
-                           -> Maybe CollisionSide   -- ^ collision side
+                           -> Maybe CollisionSide   -- ^ collision side if collision
   rectangleCircleCollision (ballX, ballY) ballR
     (rectX, rectY) rectW rectH
           | not collision = Nothing

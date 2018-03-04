@@ -11,6 +11,12 @@ module Physics
 
   import Data.Maybe
 
+  -- * Ball Universe
+
+  -- Speed up the ball velocity
+  speedUp :: (Float, Float) -> (Float, Float)
+  speedUp (x, y) = (speedRatio * x, speedRatio * y)
+
   -- | Update the ball position using its current velocity.
   moveBall :: Float -- ^ The number of seconds since last Update
            -> Game  -- ^ The initial game state
@@ -50,10 +56,6 @@ module Physics
 
   -- * Brick Universe
 
-  -- Speed up the ball velocity
-  speedUp :: (Float, Float) -> (Float, Float)
-  speedUp (x, y) = (speedRatio * x, speedRatio * y)
-
   -- | Detect a collision with one a the bricks still present. Upon collisions,
   --   update the bricks list
   bricksBounce :: Game  -- ^ Initial game state
@@ -64,7 +66,6 @@ module Physics
         Just BottomSide -> game {bricks = bricksUpdated, ballVel = speedUp (vx, -vy)}
         Just LeftSide   -> game {bricks = bricksUpdated, ballVel = speedUp (-vx, vy)}
         Just RightSide  -> game {bricks = bricksUpdated, ballVel = speedUp (-vx, vy)}
-<<<<<<< 4a40d3eca59efec4c779fcd94eaa75af914375db
         where
         -- ball position
         (vx, vy) = ballVel game
@@ -72,9 +73,19 @@ module Physics
         bc = bricksCollision (ballLoc game) ballRadius (bricks game)
         -- bricks list
         bricksUpdated = snd bc
-=======
-      where
+
+  -- * Paddle Universe
+
+  -- | Detec a collision with the paddle. Upon collision, update ball velocity
+  paddleBounce :: Game
+               -> Game
+  paddleBounce game =
+    case pc of
+      Nothing   -> game
+      Just TopSide    -> game { ballVel = (vx, -vy)}
+      Just BottomSide -> game { ballVel = (vx, -vy)}
+      Just LeftSide   -> game { ballVel = (-vx, vy)}
+      Just RightSide  -> game { ballVel = (-vx, vy)}
+    where
       (vx, vy) = ballVel game
-      bc = bricksCollision (ballLoc game) ballRadius (bricks game)
-      bricksUpdated = snd bc
->>>>>>> refacto wallCollisionType in CollisionSide
+      pc = paddleCollision (ballLoc game) ballRadius (paddlePos game) paddleWidth paddleHeight
