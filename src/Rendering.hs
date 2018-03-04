@@ -24,6 +24,12 @@ module Rendering where
          -> Picture         -- ^ Picture of this ball
   mkBall col radius (x, y) = translate x y  $ color col $ circleSolid radius
 
+  -- * make a brick
+  mkBrick :: Brick    -- ^ the brick to render
+          -> Picture  -- ^ brick picture
+  mkBrick b = translate x y $ color (brickCol b) $ rectangleSolid brickWidth brickHeight
+      where
+        (x, y) = brickLoc b
 
   -- * render the game
   renderGame :: Game    -- ^ The game state to render
@@ -34,6 +40,8 @@ module Rendering where
       , mkWall wallColor (fromIntegral winWidth + wallWidth / 2) wallWidth wallDownPos
       , mkWall wallColor wallWidth (fromIntegral winHeight + wallWidth / 2) wallLeftPos
       , mkWall wallColor wallWidth (fromIntegral winHeight - wallWidth / 2) wallRightPos
+      , pictures . fmap mkBrick $ bricks game
       ]
       where
         wallColor = blue
+        brickColor = yellow
