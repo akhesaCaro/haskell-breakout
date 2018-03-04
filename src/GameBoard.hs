@@ -16,9 +16,10 @@ module GameBoard where
   gameHeight :: Height
   gameHeight = 800
 
-  brickWidth, brickHeight :: Float
+  brickWidth, brickHeight, speedRatio :: Float
   brickWidth = 100
   brickHeight = 40
+  speedRatio = 1.5
 
   ballRadius :: Radius
   ballRadius = 10

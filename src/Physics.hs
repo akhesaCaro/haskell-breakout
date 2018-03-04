@@ -47,6 +47,11 @@ module Physics where
       (vx, vy) = ballVel game
       c = wallsCollision (ballLoc game) ballRadius gameWidth gameHeight
 
+
+  -- Speed up the ball velocity
+  speedUp :: (Float, Float) -> (Float, Float)
+  speedUp (x, y) = (speedRatio * x, speedRatio * y)
+
   -- | Detect a collision with one a the bricks still present. Upon collisions,
   --   update the bricks list
   bricksBounce :: Game  -- ^ Initial game state
@@ -54,10 +59,10 @@ module Physics where
   bricksBounce game =
       case fst bc of
         Nothing         -> game
-        Just TopSide    -> game {bricks = bricksUpdated, ballVel = (vx, -vy)}
-        Just BottomSide -> game {bricks = bricksUpdated, ballVel = (vx, -vy)}
-        Just LeftSide   -> game {bricks = bricksUpdated, ballVel = (-vx, vy)}
-        Just RightSide  -> game {bricks = bricksUpdated, ballVel = (-vx, vy)}
+        Just TopSide    -> game {bricks = bricksUpdated, ballVel = speedUp (vx, -vy)}
+        Just BottomSide -> game {bricks = bricksUpdated, ballVel = speedUp (vx, -vy)}
+        Just LeftSide   -> game {bricks = bricksUpdated, ballVel = speedUp (-vx, vy)}
+        Just RightSide  -> game {bricks = bricksUpdated, ballVel = speedUp (-vx, vy)}
       where
       (vx, vy) = ballVel game
       bc = bricksCollision (ballLoc game) ballRadius (bricks game)
