@@ -44,8 +44,8 @@ module CollisionDetection where
   -- | Given position and radius of the ball, return whether a collision occurred on the wall.
   wallsCollision :: Position                -- ^ ball position
                 -> Radius                   -- ^ ball radius
-                -> Float                    -- ^ window width
-                -> Float                    -- ^ window height
+                -> Width                    -- ^ game width
+                -> Height                    -- ^ game height
                 -> Maybe WallCollisionType  -- ^ collision with the walls?
   wallsCollision (x, y) radius width height
           | y + radius >=  height / 2 = Just TopWall    -- ^ Top wall

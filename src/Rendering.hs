@@ -11,15 +11,15 @@ module Rendering where
 
   -- * make a wall
   mkWall :: Color           -- ^ Wall's color
-         -> Float           -- ^ Wall's width
-         -> Float           -- ^ Wall's height
+         -> Width           -- ^ Wall's width
+         -> Height          -- ^ Wall's height
          -> (Float, Float)  -- ^ Wall's center
          -> Picture         -- ^ Wall's picture
   mkWall col width height (x , y) = translate x y $ color col $ rectangleSolid width height
 
   -- * make a ball
   mkBall :: Color   -- ^ Ball's color
-         -> Float   -- ^ Ball's radius
+         -> Radius   -- ^ Ball's radius
          -> (Float, Float)  -- ^ Ball's center
          -> Picture         -- ^ Picture of this ball
   mkBall col radius (x, y) = translate x y  $ color col $ circleSolid radius
@@ -36,10 +36,10 @@ module Rendering where
              -> Picture -- ^ A picture of this game state
   renderGame game = pictures
       [ mkBall (dark red) 10 (ballLoc game)
-      , mkWall wallColor (fromIntegral winWidth - wallWidth / 2) wallWidth wallUpPos
-      , mkWall wallColor (fromIntegral winWidth + wallWidth / 2) wallWidth wallDownPos
-      , mkWall wallColor wallWidth (fromIntegral winHeight + wallWidth / 2) wallLeftPos
-      , mkWall wallColor wallWidth (fromIntegral winHeight - wallWidth / 2) wallRightPos
+      , mkWall wallColor gameWidth wallWidth wallUpPos
+      , mkWall wallColor gameWidth wallWidth wallDownPos
+      , mkWall wallColor wallWidth gameHeight wallLeftPos
+      , mkWall wallColor wallWidth gameHeight wallRightPos
       , pictures . fmap mkBrick $ bricks game
       ]
       where

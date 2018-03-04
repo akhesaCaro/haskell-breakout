@@ -64,5 +64,4 @@ module Physics where
         Nothing -> game
     where
       (vx, vy) = ballVel game
-      c = wallsCollision (ballLoc game) ballRadius
-            (fromIntegral winWidth - wallWidth / 2) (fromIntegral winHeight - wallWidth / 2)
+      c = wallsCollision (ballLoc game) ballRadius gameWidth gameHeight

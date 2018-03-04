@@ -2,29 +2,40 @@ module GameBoard where
 
   import Graphics.Gloss
 
-  winWidth, winHeight, offset:: Int
-  winWidth = 800
-  winHeight = 800
+  offset:: Int
   offset = 100
 
-  wallWidth, brickWidth, brickHeight :: Float
-  wallWidth = 20
-  brickWidth = 200
+  winHeight, winWidth :: Int
+  winWidth = floor (gameWidth + wallWidth)
+  winHeight = floor (gameHeight + wallWidth)
+
+  gameWidth, wallWidth :: Width
+  gameWidth = 800
+  wallWidth = 10
+
+  gameHeight :: Height
+  gameHeight = 800
+
+  brickWidth, brickHeight :: Float
+  brickWidth = 100
   brickHeight = 40
 
   ballRadius :: Radius
   ballRadius = 10
 
   wallUpPos, wallDownPos, wallLeftPos, wallRightPos :: (Float , Float)
-  wallUpPos   = (0,fromIntegral winHeight / 2)      -- ^ top wall position
-  wallDownPos = (0,-(fromIntegral winHeight / 2))   -- ^ botom wall position
-  wallLeftPos = (fromIntegral winWidth / 2, 0)      -- ^ left wall position
-  wallRightPos = (-(fromIntegral winWidth / 2), 0)  -- ^ right wall position
-                         -- ^ ball velocity
-
+  wallUpPos   = (0, gameHeight / 2)      -- ^ top wall position
+  wallDownPos = (0,-(gameHeight/ 2))   -- ^ botom wall position
+  wallLeftPos = (gameWidth / 2 , 0)      -- ^ left wall position
+  wallRightPos = (-(gameWidth / 2), 0)  -- ^ right wall position
+      
+  -- * aliases
   type Radius = Float
   type Position = (Float, Float)
+  type Width = Float
+  type Height = Float
 
+  -- *  Brick
   data Brick = Brick
         { brickLoc :: (Float, Float) -- ^ brick (x, y) location
         , brickCol :: Color          -- ^ brick color
@@ -42,5 +53,5 @@ module GameBoard where
   initialState = Game
     { ballLoc = (0, 0)
     , ballVel = (40, -140)
-    , bricks = [Brick {brickLoc = (0, 0), brickCol = yellow}]
+    , bricks = [Brick {brickLoc = (-300, 300), brickCol = yellow}]
     }
