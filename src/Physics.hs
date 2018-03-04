@@ -33,28 +33,15 @@ module Physics
   --   update the velocity of the ball to bounce it off the wall.
   wallBounce :: Game  -- ^ The initial game state
              -> Game  -- ^ A new game state with an updated ball velocity
-<<<<<<< 5497ba263407639e64825b2b772b26a9c0e5ecc6
   wallBounce game = case c of
-      Just TopWall    -> game { ballVel = (vx, -vy) }
-      Just BottomWall -> game { ballVel = (vx, -vy) }
-      Just LeftWall   -> game { ballVel = (-vx, vy) }
-      Just RightWall  -> game { ballVel = (-vx, vy) }
+      Just BottomSide    -> game { ballVel = (vx, -vy) }
+      Just TopSide -> game { ballVel = (vx, -vy) }
+      Just RightSide   -> game { ballVel = (-vx, vy) }
+      Just LeftSide  -> game { ballVel = (-vx, vy) }
       Nothing         -> game
       where
-=======
-
-  wallBounce game =
-      case c of
-        Just BottomSide -> game { ballVel = (vx, -vy) }
-        Just TopSide -> game { ballVel = (vx, -vy) }
-        Just RightSide -> game { ballVel = (-vx, vy) }
-        Just LeftSide -> game { ballVel = (-vx, vy) }
-        Nothing -> game
-    where
->>>>>>> refacto wallCollisionType in CollisionSide
       (vx, vy) = ballVel game
       c = wallsCollision (ballLoc game) ballRadius gameWidth gameHeight
-
 
   -- * Brick Universe
 
@@ -72,7 +59,6 @@ module Physics
         Just BottomSide -> game {bricks = bricksUpdated, ballVel = speedUp (vx, -vy)}
         Just LeftSide   -> game {bricks = bricksUpdated, ballVel = speedUp (-vx, vy)}
         Just RightSide  -> game {bricks = bricksUpdated, ballVel = speedUp (-vx, vy)}
-<<<<<<< 5497ba263407639e64825b2b772b26a9c0e5ecc6
         where
         -- ball position
         (vx, vy) = ballVel game
@@ -80,9 +66,3 @@ module Physics
         bc = bricksCollision (ballLoc game) ballRadius (bricks game)
         -- bricks list
         bricksUpdated = snd bc
-=======
-      where
-      (vx, vy) = ballVel game
-      bc = bricksCollision (ballLoc game) ballRadius (bricks game)
-      bricksUpdated = snd bc
->>>>>>> refacto wallCollisionType in CollisionSide
