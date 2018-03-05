@@ -1,6 +1,7 @@
 module CollisionDetection
   ( wallsCollision
   , bricksCollision
+  , paddleCollision
   , CollisionSide (..)
   ) where
 
@@ -62,14 +63,8 @@ module CollisionDetection
                   -> Maybe CollisionSide -- ^ collision side if collision
   paddleCollision = rectangleCircleCollision
 
-<<<<<<< f7eb4ebc3c3ca74df6ca8b92b6f647c67584fcc3
   -- | Given position and raidus of the ball return nothing if there is
   --   no collision or the collisionSide
-=======
-
-  -- | Given position and radius of the ball, return whether
-  --   a collision occurred on the rectangle
->>>>>>> paddle collision
   rectangleCircleCollision :: Position    -- ^ ball position
                            -> Radius      -- ^ ball radius
                            -> Position    -- ^ rectangle bottom left position

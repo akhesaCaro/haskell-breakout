@@ -10,10 +10,6 @@ module EventHandler
   import Graphics.Gloss.Interface.Pure.Game
   import System.Exit
 
-<<<<<<< ef207458608785b7998e8f3d8c39008da8a43327
-=======
-
->>>>>>> Better collision with paddle and walls limit
   -- | Pure responding to key events.
   handleKeys :: Event     -- ^ keyEvent
               -> Game      -- ^ Initial game state

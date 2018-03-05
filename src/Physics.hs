@@ -4,6 +4,9 @@ module Physics
   ( moveBall
   , wallBounce
   , bricksBounce
+  , speedUp
+  , paddleBounce
+  , movePaddle
   ) where
 
   import GameBoard
