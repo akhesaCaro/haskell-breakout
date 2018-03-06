@@ -33,23 +33,17 @@ module GameBoard
   brickWidth = 100
   paddleWidth = 100
 
-  -- | speed ration (when the ball hits a brick)
+  gameHeight, brickHeight, paddleHeight :: Height
+  gameHeight = 800  
+  brickHeight = 40
+  paddleHeight = 10
+
+  -- | speed ratio (when the ball hits a brick)
   speedRatio :: Float
   speedRatio = 1.5
 
-<<<<<<< ef207458608785b7998e8f3d8c39008da8a43327
-  -- | all the widths : brick, wall, game
-  gameHeight, brickHeight, paddleHeight :: Height
-  gameHeight = 800
-  brickHeight = 40
-  paddleHeight = 10
-=======
-  brickWidth, brickHeight, speedRatio, paddleStep :: Float
-  brickWidth = 100
-  brickHeight = 40
-  speedRatio = 1.5
+  paddleStep :: Float
   paddleStep = 5
->>>>>>> Better collision with paddle and walls limit
 
   -- | Radius of the ball
   ballRadius :: Radius
