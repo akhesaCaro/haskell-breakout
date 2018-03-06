@@ -8,17 +8,18 @@ import  Rendering
 import  Graphics.Gloss
 import  Graphics.Gloss.Data.ViewPort
 
--- |Background Color
+-- | Window Background Color
 background :: Color
 background = black
 
 -- | Update the game by moving the ball and bouncing off walls.
-update :: Float     -- ^ The number of seconds since last update
-       -> Game  -- ^ The intial game state
-       -> Game  -- ^ A new game state with an updated ball and paddles positions.
-update seconds = paddleBounce . movePaddle . bricksBounce . wallBounce . moveBall seconds
+update :: Float   -- ^ The number of seconds since last update
+       -> Game    -- ^ The intial game state
+       -> Game    -- ^ A new game state with an updated ball and paddles positions.
+update seconds =
+      paddleBounce . movePaddle . bricksBounce . wallBounce . moveBall seconds
 
--- |Window
+-- | Window
 window :: Display
 window = InWindow "Haskell Breakout" (winWidth, winHeight) (offset, offset)
 
@@ -26,5 +27,6 @@ window = InWindow "Haskell Breakout" (winWidth, winHeight) (offset, offset)
 fps :: Int
 fps = 60
 
+-- | Main
 main :: IO ()
 main = play window background fps initialState renderGame handleKeys update
