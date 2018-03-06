@@ -16,8 +16,8 @@ module Physics
 
   -- * Ball Universe
 
-  -- Speed up the ball velocity
-  speedUp :: (Float, Float) -> (Float, Float)
+  -- Speed up the ball
+  speedUp :: Position -> Position
   speedUp (x, y) = (speedRatio * x, speedRatio * y)
 
   -- | Update the ball position using its current velocity.
@@ -59,7 +59,7 @@ module Physics
 
   -- * Brick Universe
 
-  -- | Detect a collision with one a the bricks still present. Upon collisions,
+  -- | Detect a collision with one of the bricks list. Upon collisions,
   --   update the bricks list
   bricksBounce :: Game  -- ^ Initial game state
                -> Game  -- ^ A new game state with an updated bricks
@@ -70,18 +70,18 @@ module Physics
         Just LeftSide   -> game {bricks = bricksUpdated, ballVel = speedUp (-vx, vy)}
         Just RightSide  -> game {bricks = bricksUpdated, ballVel = speedUp (-vx, vy)}
         where
-        -- ball position
-        (vx, vy) = ballVel game
-        -- a collision? where?
-        bc = bricksCollision (ballLoc game) ballRadius (bricks game)
-        -- bricks list
-        bricksUpdated = snd bc
+          -- ball position
+          (vx, vy) = ballVel game
+          -- a collision? where?
+          bc = bricksCollision (ballLoc game) ballRadius (bricks game)
+          -- bricks list
+          bricksUpdated = snd bc
 
   -- * Paddle Universe
 
   -- | Detec a collision with the paddle. Upon collision, update ball velocity
-  paddleBounce :: Game
-               -> Game
+  paddleBounce :: Game  -- ^ Intial game state
+               -> Game  -- ^ Game with ball velocity updated
   paddleBounce game =
     case pc of
       Nothing   -> game
@@ -90,8 +90,8 @@ module Physics
       Just LeftSide   -> game { ballVel = (-vx, vy)}
       Just RightSide  -> game { ballVel = (-vx, vy)}
     where
-      (vx, vy) = ballVel game
-      pc = paddleCollision (ballLoc game) ballRadius (paddleLoc $ paddle game) paddleWidth paddleHeight
+        (vx, vy) = ballVel game
+        pc = paddleCollision (ballLoc game) ballRadius (paddleLoc $ paddle game) paddleWidth paddleHeight
 
 
   -- | Update the paddle position
