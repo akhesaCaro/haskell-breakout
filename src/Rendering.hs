@@ -37,6 +37,14 @@ module Rendering
       where
         (x, y) = brickLoc b
 
+  -- render paddle
+  mkPaddle :: Color    -- ^ the paddle color
+          -> Width    -- ^ paddle width
+          -> Height   -- ^ paddle height
+          -> Position -- ^ paddle position
+          -> Picture  -- ^ paddle picture
+  mkPaddle c w h (x, y) = translate x y $ color c $ rectangleSolid w h
+
   -- | render the game
   renderGame :: Game    -- ^ The game state to render
              -> Picture -- ^ A picture of this game state
@@ -47,7 +55,9 @@ module Rendering
       , mkWall wallColor wallWidth gameHeight wallLeftPos
       , mkWall wallColor wallWidth gameHeight wallRightPos
       , pictures . fmap mkBrick $ bricks game
+      , mkPaddle paddleColor paddleWidth paddleHeight (paddleLoc $ paddle game)
       ]
       where
         wallColor = blue
         brickColor = yellow
+        paddleColor = cyan

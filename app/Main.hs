@@ -16,7 +16,7 @@ background = black
 update :: Float     -- ^ The number of seconds since last update
        -> Game  -- ^ The intial game state
        -> Game  -- ^ A new game state with an updated ball and paddles positions.
-update seconds = bricksBounce . wallBounce . moveBall seconds
+update seconds = paddleBounce . movePaddle . bricksBounce . wallBounce . moveBall seconds
 
 -- |Window
 window :: Display
