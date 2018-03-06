@@ -1,55 +1,77 @@
-module GameBoard where
+module GameBoard
+  ( winHeight, winWidth, offset
+  , gameWidth, gameHeight
+  , wallWidth
+  , brickWidth, brickHeight
+  , ballRadius
+  , wallUpPos, wallDownPos, wallLeftPos, wallRightPos
+  , Position
+  , Radius
+  , Width
+  , Height
+  , Brick(..)
+  , Game (..)
+  , initialState
+  ) where
 
   import Graphics.Gloss
 
+  -- | position of the window on the screen
   offset:: Int
   offset = 100
 
+  -- | Window width and height
   winHeight, winWidth :: Int
   winWidth = floor (gameWidth + wallWidth * 2)
   winHeight = floor (gameHeight + wallWidth * 2)
 
-  gameWidth, wallWidth :: Width
+  -- | all the widths : brick, game
+  -- wallWidth = thickness
+  gameWidth, wallWidth, brickWidth :: Width
   gameWidth = 800
   wallWidth = 10
-
-  gameHeight :: Height
-  gameHeight = 800
-
-  brickWidth, brickHeight, speedRatio :: Float
   brickWidth = 100
+
+  -- | all the widths : brick, wall, game
+  gameHeight, brickHeight :: Height
+  gameHeight = 800  
   brickHeight = 40
+  
+  speedRatio :: Float
   speedRatio = 1.5
 
+  -- | Radius of the ball
   ballRadius :: Radius
   ballRadius = 10
 
-  wallUpPos, wallDownPos, wallLeftPos, wallRightPos :: (Float , Float)
+  -- | All the wall positions
+  wallUpPos, wallDownPos, wallLeftPos, wallRightPos :: Position
   wallUpPos   = (0, gameHeight / 2)      -- ^ top wall position
   wallDownPos = (0,-(gameHeight/ 2))   -- ^ botom wall position
   wallLeftPos = (gameWidth / 2 , 0)      -- ^ left wall position
   wallRightPos = (-(gameWidth / 2), 0)  -- ^ right wall position
 
-  -- * aliases
+  -- | aliases
   type Radius = Float
   type Position = (Float, Float)
   type Width = Float
   type Height = Float
 
-  -- *  Brick
+
+  -- | Brick
   data Brick = Brick
         { brickLoc :: (Float, Float) -- ^ brick (x, y) location
         , brickCol :: Color          -- ^ brick color
         } deriving Show
 
-  -- * Game
+  -- | Game
   data Game = Game
     { ballLoc :: (Float, Float) -- ^ ball (x, y) location.
     , ballVel :: (Float, Float) -- ^ ball (x, y) velocity
     , bricks :: [Brick]         -- ^ bricks list
     } deriving Show
 
-  -- ** initial state of the game
+  -- | initial state of the game
   initialState :: Game
   initialState = Game
     { ballLoc = (0, 0)

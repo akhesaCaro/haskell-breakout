@@ -1,49 +1,61 @@
-module CollisionDetection where
+module CollisionDetection
+  ( wallsCollision
+  , bricksCollision
+  , CollisionSide (..)
+  , WallCollisionType (..)
+  ) where
 
-  import Debug.Trace
+
   import GameBoard
 
+
+  -- | If there a collision on which side it accured
   data CollisionSide =
     TopSide | BottomSide | LeftSide | RightSide
     deriving Show
 
+  -- | If there a collision with a wall on which side it accured
   data WallCollisionType =
     TopWall | BottomWall | LeftWall | RightWall
 
-  -- | Given position and radius of the ball, return whether
-  --   a collision occurred on the wall.
+  -- | Given position and radius of the ball, return nothing if there is
+  --   no collision or the collisionSide
   wallsCollision :: Position                -- ^ ball position
                 -> Radius                   -- ^ ball radius
                 -> Width                    -- ^ game width
                 -> Height                    -- ^ game height
                 -> Maybe WallCollisionType  -- ^ collision with the walls?
   wallsCollision (x, y) radius width height
-          | y + radius >=  height / 2 = Just TopWall    -- ^ Top wall
-          | y - radius <= -height / 2 = Just BottomWall -- ^ Bottom wall
-          | x - radius <= -width / 2 = Just LeftWall    -- ^ Left wall
-          | x + radius >=  width / 2 = Just RightWall   -- ^ Right wall
+          | y + radius >=  height / 2 = Just TopWall
+          | y - radius <= -height / 2 = Just BottomWall
+          | x - radius <= -width / 2 = Just LeftWall
+          | x + radius >=  width / 2 = Just RightWall
           | otherwise = Nothing
 
-  -- | Given position and radius of the ball, return whether
-  --   a collision occurred on the brick
+  -- | Given position and radius of the ball, return nothing if there is
+  --   no collision or the collisionSide
   bricksCollision :: Position      -- ^ ball position
                  -> Radius        -- ^ ball radius
                  -> [Brick]         -- ^ bricks List
                  -> (Maybe CollisionSide, [Brick])   -- ^ CollisionSide
   bricksCollision ballL ballR bricks = go ballL ballR bricks (Nothing,[])
-            where go :: Position -> Radius -> [Brick] -> (Maybe CollisionSide, [Brick]) -> (Maybe CollisionSide, [ Brick ])
+            where go :: Position -> Radius -> [Brick]
+                     -> (Maybe CollisionSide, [Brick])
+                     -> (Maybe CollisionSide, [ Brick ])
                   go _ _ [] resp = resp
                   go ballL ballR (b:bs) (col, brickLts) =
                       case collision of
                         Nothing   -> go ballL ballR bs (col, b:brickLts)
                         _ -> (collision, brickLts ++ bs)
                       where
-                        collision = rectangleCircleCollision ballL ballR (brickX - brickWidth / 2, brickY - brickHeight / 2) brickWidth brickHeight
+                        collision = rectangleCircleCollision ballL ballR
+                                (brickX - brickWidth / 2, brickY - brickHeight / 2)
+                                  brickWidth brickHeight
                         (brickX, brickY) = brickLoc b
 
 
-  -- | Given position and raidus of the ball, return whether
-  --   a colision occurred on the rectangle
+  -- | Given position and raidus of the ball return nothing if there is
+  --   no collision or the collisionSide
   rectangleCircleCollision :: Position    -- ^ ball position
                            -> Radius      -- ^ ball radius
                            -> Position    -- ^ rectangle bottom left position

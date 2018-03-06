@@ -8,7 +8,7 @@ import  Rendering
 import  Graphics.Gloss
 import  Graphics.Gloss.Data.ViewPort
 
--- ** Background Color
+-- |Background Color
 background :: Color
 background = black
 
@@ -18,7 +18,7 @@ update :: Float     -- ^ The number of seconds since last update
        -> Game  -- ^ A new game state with an updated ball and paddles positions.
 update seconds = bricksBounce . wallBounce . moveBall seconds
 
--- * Window
+-- |Window
 window :: Display
 window = InWindow "Haskell Breakout" (winWidth, winHeight) (offset, offset)
 
