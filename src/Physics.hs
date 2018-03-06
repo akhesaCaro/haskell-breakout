@@ -57,7 +57,9 @@ module Physics
 
   -- * Brick Universe
 
-  -- * Brick Universe
+  -- Speed up the ball velocity
+  speedUp :: (Float, Float) -> (Float, Float)
+  speedUp (x, y) = (speedRatio * x, speedRatio * y)
 
   -- | Detect a collision with one of the bricks list. Upon collisions,
   --   update the bricks list
