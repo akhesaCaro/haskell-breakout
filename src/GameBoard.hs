@@ -34,8 +34,11 @@ module GameBoard
 
   -- | all the widths : brick, wall, game
   gameHeight, brickHeight :: Height
-  gameHeight = 800
+  gameHeight = 800  
   brickHeight = 40
+  
+  speedRatio :: Float
+  speedRatio = 1.5
 
   -- | Radius of the ball
   ballRadius :: Radius
