@@ -11,6 +11,13 @@ import GameBoard
 import Graphics.Gloss
 
 
+-- | render dot
+renderDot :: Color    -- ^ dot color
+          -> Position -- ^ dot position
+          -> Radius   -- ^ dot radius
+          -> Picture  -- ^ Picture of the dot
+renderDot c (x, y) radius = translate x y $ color c $  circleSolid radius
+
 -- | render state text
 mkStateText :: Color      -- ^ Text color
             -> String     -- ^ Text
@@ -60,6 +67,7 @@ renderGame game = pictures
       , mkWall wallColor wallWidth gameHeight wallRightPos
       , pictures . fmap mkBrick $ bricks game
       , mkPaddle paddleColor paddleWidth paddleHeight (paddleLoc $ paddle game)
+      , renderDot white (ballDot game) 2
       ]
       where
         wallColor = blue

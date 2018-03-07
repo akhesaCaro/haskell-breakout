@@ -81,6 +81,7 @@ data Paddle = Paddle
 data Game = Game
     { ballLoc :: Position   -- ^ ball (x, y) location.
     , ballVel :: Velocity   -- ^ ball (x, y) velocity
+    , ballDot :: Position   -- ^ velocity indicator
     , bricks :: [Brick]     -- ^ bricks list
     , paddle :: Paddle      -- ^ paddle
     } deriving Show
@@ -90,6 +91,7 @@ initialState :: Game
 initialState = Game
     { ballLoc = (0, 0)
     , ballVel = (40, -140)
+    , ballDot = (0, 0)
     , bricks = [ Brick {brickLoc = (-300, 300), brickCol = yellow}
                , Brick {brickLoc = (0, 0), brickCol = blue}
                , Brick {brickLoc = (50, 50), brickCol = magenta}

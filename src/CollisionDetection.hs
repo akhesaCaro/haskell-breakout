@@ -63,6 +63,7 @@ paddleCollision :: Position      -- ^ ball position
                 -> Maybe CollisionSide -- ^ collision side if collision
 paddleCollision = rectangleCircleCollision
 
+
 -- | Given position and raidus of the ball return nothing if there is
 --   no collision or the collisionSide
 rectangleCircleCollision :: Position    -- ^ ball position

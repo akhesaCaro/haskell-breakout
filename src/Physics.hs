@@ -7,6 +7,7 @@ module Physics
   , speedUp
   , paddleBounce
   , movePaddle
+  , computeDot
   ) where
 
   import GameBoard
@@ -19,6 +20,21 @@ module Physics
   -- Speed up the ball
   speedUp :: Position -> Position
   speedUp (x, y) = (speedRatio * x, speedRatio * y)
+
+
+  -- | Update the dot position with the velocity
+  computeDot :: Game  -- ^ initial game state
+             -> Game  -- ^ game updated
+  computeDot game = game { ballDot = (ax + x , ay + y) }
+        where
+          (x, y)  = ballLoc game
+          (vx, vy) = ballVel game
+          radius = ballRadius
+          ax = (vx * radius) / normV
+          ay = (vy * radius) / normV
+          normV = sqrt ( vx * vx + vy * vy )
+
+
 
   -- | Update the ball position using its current velocity.
   moveBall :: Float -- ^ The number of seconds since last Update
