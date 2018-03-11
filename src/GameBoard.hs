@@ -8,6 +8,7 @@ module GameBoard
     , paddleWidth, paddleHeight, paddleStep
     , Position
     , Radius
+    , Velocity
     , Width
     , Height
     , Brick(..)
@@ -16,7 +17,8 @@ module GameBoard
     , initialState
     ) where
 
-import Graphics.Gloss
+-- I want to use my own Vector.
+import Graphics.Gloss  hiding (Vector)
 
 -- | position of the window on the screen
 offset:: Int

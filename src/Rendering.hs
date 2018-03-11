@@ -8,7 +8,8 @@ module Rendering
 
 import GameBoard
 
-import Graphics.Gloss
+-- I want to use my own Vector.
+import Graphics.Gloss hiding (Vector)
 
 
 -- | render dot

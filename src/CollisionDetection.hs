@@ -1,12 +1,16 @@
 module CollisionDetection
   ( wallsCollision
   , bricksCollision
-  , paddleCollision
+  , rectangleDotCollision
   , CollisionSide (..)
+  ,
   ) where
 
 
 import GameBoard
+import Maths
+
+import Data.Maybe
 
 -- | If there a collision on which side it accured
 data CollisionSide =
@@ -62,6 +66,40 @@ paddleCollision :: Position      -- ^ ball position
                 -> Height        -- ^ paddle height
                 -> Maybe CollisionSide -- ^ collision side if collision
 paddleCollision = rectangleCircleCollision
+
+
+
+-- | Calculate with the scalar dot product on which side there is
+--   a collision or nothing if there is no collision
+rectangleDotCollision :: Position     -- ^ dot position
+                      -> Velocity     -- ^ dot velocity
+                      -> Position     -- ^ rectangle center
+                      -> Width        -- ^ rectangle width
+                      -> Height       -- ^ rectangle height
+                      -> Maybe Velocity  -- ^ new circle velocity
+rectangleDotCollision ballDot ballVelocity@(vx, vy)
+  (rectX, rectY) rectW rectH
+      | scalarProductTopSide < 0 &&
+              isJust (intersecPoint ballDot ballVelocity (rectW, 0) cornerTopLeft)
+                = Just (vx, -vy)
+      | scalarProductBottomSide < 0 &&
+              isJust (intersecPoint ballDot ballVelocity (rectW, 0) cornerBottomLeft)
+                = Just (vx, -vy)
+      | scalarProductLeftSide < 0 &&
+              isJust (intersecPoint ballDot ballVelocity (0, rectH) cornerTopLeft)
+                = Just (-vx, vy)
+      | scalarProductRightSide < 0 &&
+              isJust (intersecPoint ballDot ballVelocity (0, rectH) cornerTopRight)
+                = Just (-vx, vy)
+      | otherwise = Nothing
+      where
+        scalarProductTopSide = ballVelocity `dot` (0, 1)
+        scalarProductBottomSide = ballVelocity `dot` (0, -1)
+        scalarProductLeftSide = ballVelocity `dot` (-1, 0)
+        scalarProductRightSide = ballVelocity `dot` (1, 0)
+        cornerTopLeft = (rectX - rectW / 2, rectY + rectH / 2)
+        cornerTopRight = (rectX + rectW / 2, rectY + rectH / 2)
+        cornerBottomLeft = (rectX - rectW / 2, rectY - rectH / 2)
 
 
 -- | Given position and raidus of the ball return nothing if there is

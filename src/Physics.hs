@@ -5,9 +5,9 @@ module Physics
   , wallBounce
   , bricksBounce
   , speedUp
-  , paddleBounce
   , movePaddle
   , computeDot
+  , paddleBounce'
   ) where
 
   import GameBoard
@@ -33,8 +33,6 @@ module Physics
           ax = (vx * radius) / normV
           ay = (vy * radius) / normV
           normV = sqrt ( vx * vx + vy * vy )
-
-
 
   -- | Update the ball position using its current velocity.
   moveBall :: Float -- ^ The number of seconds since last Update
@@ -93,19 +91,18 @@ module Physics
 
   -- * Paddle Universe
 
-  -- | Detec a collision with the paddle. Upon collision, update ball velocity
-  paddleBounce :: Game  -- ^ Intial game state
-               -> Game  -- ^ Game with ball velocity updated
-  paddleBounce game =
-    case pc of
-      Nothing   -> game
-      Just TopSide    -> game { ballVel = (vx, -vy)}
-      Just BottomSide -> game { ballVel = (vx, -vy)}
-      Just LeftSide   -> game { ballVel = (-vx, vy)}
-      Just RightSide  -> game { ballVel = (-vx, vy)}
+  paddleBounce' :: Float
+                -> Game
+                -> Game
+  paddleBounce' s game = case newVelocity of
+                    Nothing ->  game
+                    Just (nvx, nvy) ->  game { ballVel = (nvx / s, nvy / s) }
     where
-        (vx, vy) = ballVel game
-        pc = paddleCollision (ballLoc game) ballRadius (paddleLoc $ paddle game) paddleWidth paddleHeight
+      (velX, velY) = ballVel game
+      newVelocity = rectangleDotCollision
+        (ballDot game) (velX * s, velY * s)
+         (paddleLoc $ paddle game)
+          paddleWidth paddleHeight
 
 
   -- | Update the paddle position
