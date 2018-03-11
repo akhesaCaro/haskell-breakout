@@ -11,6 +11,7 @@ module GameBoard
     , Velocity
     , Width
     , Height
+    , Rectangle
     , Brick(..)
     , Game (..)
     , Paddle (..)
@@ -56,8 +57,8 @@ ballRadius = 10
 wallUpPos, wallDownPos, wallLeftPos, wallRightPos :: Position
 wallUpPos    = (0, gameHeight / 2)     -- ^ top wall position
 wallDownPos  = (0,-(gameHeight/ 2))    -- ^ botom wall position
-wallLeftPos  = (gameWidth / 2 , 0)     -- ^ left wall position
-wallRightPos = (-(gameWidth / 2), 0)   -- ^ right wall position
+wallLeftPos  = (-(gameWidth / 2) , 0)     -- ^ left wall position
+wallRightPos = (gameWidth / 2, 0)   -- ^ right wall position
 
 
 -- | aliases
@@ -66,6 +67,7 @@ type Velocity = (Float, Float)
 type Position = (Float, Float)
 type Width = Float
 type Height = Float
+type Rectangle = (Position, Width, Height)
 
 -- | Brick
 data Brick = Brick
@@ -92,7 +94,7 @@ data Game = Game
 initialState :: Game
 initialState = Game
     { ballLoc = (0, 0)
-    , ballVel = (40, -140)
+    , ballVel = (-40, 140)
     , ballDot = (0, 0)
     , bricks = [ Brick {brickLoc = (-300, 300), brickCol = yellow}
                , Brick {brickLoc = (0, 0), brickCol = blue}

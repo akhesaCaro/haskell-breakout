@@ -30,7 +30,7 @@ mkStateText col text (x, y) = translate (-120) 0 $ scale x y $ color col $ Text 
 mkWall :: Color           -- ^ Wall's color
        -> Width           -- ^ Wall's width
        -> Height          -- ^ Wall's height
-       -> (Float, Float)  -- ^ Wall's center
+       -> Position  -- ^ Wall's center
        -> Picture         -- ^ Wall's picture
 mkWall col width height (x , y) =
       translate x y $ color col $ rectangleSolid width height

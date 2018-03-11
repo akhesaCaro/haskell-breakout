@@ -7,7 +7,7 @@ module Physics
   , speedUp
   , movePaddle
   , computeDot
-  , paddleBounce'
+  , rectanglesBounce
   ) where
 
   import GameBoard
@@ -50,7 +50,22 @@ module Physics
         y' = y + vy * seconds
 
 
-  -- * Wall Universe
+  -- * Wall Univers
+
+  rectanglesBounce :: Float   -- ^ seconds since last update
+                   -> Game    -- ^ initial state of the game
+                   -> Game    -- ^ game updated
+  rectanglesBounce s game = game { ballVel = (nsX / s , nsY / s) }
+        where
+          ballD = ballDot game
+          (ballVX, ballVY) = ballVel game
+          (nsX, nsY)  = rectanglesDotCollision ballD (ballVX * s, ballVY * s) rectangles
+          rectangles = [ (paddleLoc $ paddle game, paddleWidth, paddleHeight)
+                       , (wallUpPos, gameWidth, wallWidth)
+                       , (wallDownPos, gameWidth, wallWidth)
+                       , (wallLeftPos, wallWidth, gameHeight)
+                       , (wallRightPos, wallWidth, gameHeight)
+                       ]
 
 
   -- * Wall Universe
@@ -68,6 +83,7 @@ module Physics
       where
       (vx, vy) = ballVel game
       c = wallsCollision (ballLoc game) ballRadius gameWidth gameHeight
+
 
   -- * Brick Universe
 
@@ -91,18 +107,19 @@ module Physics
 
   -- * Paddle Universe
 
-  paddleBounce' :: Float
-                -> Game
-                -> Game
-  paddleBounce' s game = case newVelocity of
-                    Nothing ->  game
-                    Just (nvx, nvy) ->  game { ballVel = (nvx / s, nvy / s) }
-    where
-      (velX, velY) = ballVel game
-      newVelocity = rectangleDotCollision
-        (ballDot game) (velX * s, velY * s)
-         (paddleLoc $ paddle game)
-          paddleWidth paddleHeight
+  -- -- | Change velocity if the ball hits the paddle
+  -- paddleBounce' :: Float
+  --               -> Game
+  --               -> Game
+  -- paddleBounce' s game = case newVelocity of
+  --                   Nothing ->  game
+  --                   Just (nvx, nvy) ->  game { ballVel = (nvx / s, nvy / s) }
+  --   where
+  --     (velX, velY) = ballVel game
+  --     newVelocity = rectangleDotCollision
+  --       (ballDot game) (velX * s, velY * s)
+  --        (paddleLoc $ paddle game)
+  --         paddleWidth paddleHeight
 
 
   -- | Update the paddle position

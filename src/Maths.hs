@@ -36,8 +36,9 @@ intersecPoint :: Vector       -- ^ vector v
 intersecPoint (vx, vy) (vx0, vy0) (abx, aby) (ax0, ay0) = clamp cram
       where cram = cramer ((abx, aby), (-vx, -vy)) (vx0 - ax0, vy0 - ay0)
 
--- |
-clamp :: Point -> Maybe Point
+-- | return the point if all value are between the range
+clamp :: Point        -- ^ Point to clap
+      -> Maybe Point
 clamp (x, y) = (,) <$> inRange x <*> inRange y
       where inRange a | a > 1     = Nothing
                       | a < 0     = Nothing
