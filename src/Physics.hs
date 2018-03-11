@@ -61,9 +61,7 @@ module Physics
           ballD = ballDot game
           (ballVX, ballVY) = ballVel game
           (nsX, nsY)  = rectanglesDotCollision ballD (ballVX * s, ballVY * s) rectangles
-          rectangles = fmap brickToRectangle (bricks game)
-                       ++
-                       [ (paddleLoc $ paddle game, paddleWidth, paddleHeight)
+          rectangles = [ (paddleLoc $ paddle game, paddleWidth, paddleHeight)
                        , (wallUpPos, gameWidth, wallWidth)
                        , (wallDownPos, gameWidth, wallWidth)
                        , (wallLeftPos, wallWidth, gameHeight)
@@ -118,13 +116,15 @@ module Physics
           bricksUpdated = snd bc
 
 
-  bricksBounce' :: Game
+  bricksBounce' :: Float
                 -> Game
-  bricksBounce' game = case fst bc of
+                -> Game
+  bricksBounce' s game = case fst bc of
         Nothing -> game
-        Just (vx, vy) -> game {bricks = bricksUpdated, ballVel = speedUp (vx, vy)}
+        Just (vx, vy) -> game {bricks = bricksUpdated, ballVel = speedUp (vx / s, vy / s)}
         where
-          bc = bricksCollision' (ballLoc game) (ballVel game) (bricks game)
+          bc = bricksCollision' (ballLoc game) (vx * s, vy * s) (bricks game)
+          (vx, vy) = ballVel game
           bricksUpdated = snd bc
 
   -- * Paddle Universe
