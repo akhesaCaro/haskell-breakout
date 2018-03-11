@@ -8,6 +8,7 @@ module Physics
   , movePaddle
   , computeDot
   , rectanglesBounce
+  , bricksBounce'
   ) where
 
   import GameBoard
@@ -60,13 +61,24 @@ module Physics
           ballD = ballDot game
           (ballVX, ballVY) = ballVel game
           (nsX, nsY)  = rectanglesDotCollision ballD (ballVX * s, ballVY * s) rectangles
-          rectangles = [ (paddleLoc $ paddle game, paddleWidth, paddleHeight)
+          rectangles = fmap brickToRectangle (bricks game)
+                       ++
+                       [ (paddleLoc $ paddle game, paddleWidth, paddleHeight)
                        , (wallUpPos, gameWidth, wallWidth)
                        , (wallDownPos, gameWidth, wallWidth)
                        , (wallLeftPos, wallWidth, gameHeight)
                        , (wallRightPos, wallWidth, gameHeight)
                        ]
 
+
+
+
+
+  brickToRectangle :: Brick
+                   -> Rectangle
+  brickToRectangle b = (brickCenter, brickWidth, brickHeight)
+        where
+        brickCenter = brickLoc b
 
   -- * Wall Universe
 
@@ -103,6 +115,16 @@ module Physics
           -- a collision? where?
           bc = bricksCollision (ballLoc game) ballRadius (bricks game)
           -- bricks list
+          bricksUpdated = snd bc
+
+
+  bricksBounce' :: Game
+                -> Game
+  bricksBounce' game = case fst bc of
+        Nothing -> game
+        Just (vx, vy) -> game {bricks = bricksUpdated, ballVel = speedUp (vx, vy)}
+        where
+          bc = bricksCollision' (ballLoc game) (ballVel game) (bricks game)
           bricksUpdated = snd bc
 
   -- * Paddle Universe

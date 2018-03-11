@@ -93,8 +93,8 @@ data Game = Game
 -- | initial state of the game
 initialState :: Game
 initialState = Game
-    { ballLoc = (0, 0)
-    , ballVel = (-40, 140)
+    { ballLoc = (0, -200)
+    , ballVel = (40, -140)
     , ballDot = (0, 0)
     , bricks = [ Brick {brickLoc = (-300, 300), brickCol = yellow}
                , Brick {brickLoc = (0, 0), brickCol = blue}

@@ -1,6 +1,7 @@
 module CollisionDetection
   ( wallsCollision
   , bricksCollision
+  , bricksCollision'
   , rectangleDotCollision
   , rectanglesDotCollision
   , CollisionSide (..)
@@ -12,7 +13,6 @@ import GameBoard
 import Maths
 
 import Data.Maybe
-import Debug.Trace
 
 -- | If there a collision on which side it accured
 data CollisionSide =
@@ -59,6 +59,24 @@ bricksCollision ballL ballR bricks = go ballL ballR bricks (Nothing,[])
                   (brickX - brickWidth / 2, brickY - brickHeight / 2)
                     brickWidth brickHeight
 
+bricksCollision' :: Position
+                 -> Velocity
+                 -> [Brick]
+                 -> (Maybe Velocity, [Brick])
+bricksCollision' ballL ballV bricks = go ballL ballV bricks (Nothing, [])
+      where go :: Position
+               -> Velocity
+               -> [Brick]
+               -> (Maybe Velocity, [Brick])
+               -> (Maybe Velocity, [Brick])
+            go _ _ [] resp = resp
+            go ballL ballV (b:bs) (col, brickLts) = case collision of
+              Nothing -> go ballL ballV bs (col, b:brickLts)
+              _ -> (collision, brickLts ++ bs)
+              where
+              collision = rectangleDotCollision ballL ballV (brickLoc b, brickWidth, brickHeight)
+
+
 -- | Given position and radius of the ball, return whether a
 --   collision occured on the paddle
 paddleCollision :: Position      -- ^ ball position
@@ -91,16 +109,16 @@ rectangleDotCollision :: Position     -- ^ dot position
 rectangleDotCollision ballDot ballVelocity@(vx, vy)
   ((rectX, rectY), rectW, rectH)
       | scalarProductTopSide < 0 &&
-              isJust (intersecPoint ballDot ballVelocity (rectW, 0) cornerTopLeft)
+              isJust (intersecPoint ballVelocity ballDot (rectW, 0) cornerTopLeft)
                 = Just (vx, -vy)
       | scalarProductBottomSide < 0 &&
-              isJust (intersecPoint ballDot ballVelocity (rectW, 0) cornerBottomLeft)
+              isJust (intersecPoint ballVelocity ballDot (rectW, 0) cornerBottomLeft)
                 = Just (vx, -vy)
       | scalarProductLeftSide < 0 &&
-              isJust (intersecPoint ballDot ballVelocity (0, -rectH) cornerTopLeft)
+              isJust (intersecPoint ballVelocity ballDot (0, -rectH) cornerTopLeft)
                 = Just (-vx, vy)
       | scalarProductRightSide < 0 &&
-              isJust (traceShowId $ intersecPoint ballDot ballVelocity (0, -rectH) cornerTopRight)
+              isJust (intersecPoint ballVelocity ballDot (0, -rectH) cornerTopRight)
                 = Just (-vx, vy)
       | otherwise = Nothing
       where
@@ -109,7 +127,7 @@ rectangleDotCollision ballDot ballVelocity@(vx, vy)
         scalarProductLeftSide = ballVelocity `dot` (-1, 0)
         scalarProductRightSide = ballVelocity `dot` (1, 0)
         cornerTopLeft = (rectX - rectW / 2, rectY + rectH / 2)
-        cornerTopRight = traceShowId $ (rectX + rectW / 2, rectY + rectH / 2)
+        cornerTopRight = (rectX + rectW / 2, rectY + rectH / 2)
         cornerBottomLeft = (rectX - rectW / 2, rectY - rectH / 2)
 
 
