@@ -3,7 +3,7 @@ module Maths
   , dot
   ) where
 
-
+-- aliases
 type Vector = (Float, Float)
 type SquareMatrix = (Vector, Vector)
 type Point = (Float, Float)
@@ -38,7 +38,7 @@ intersecPoint :: Vector       -- ^ vector v
 intersecPoint (vx, vy) (vx0, vy0) (abx, aby) (ax0, ay0) = clamp cram
       where cram = cramer ((abx, aby), (-vx, -vy)) (vx0 - ax0, vy0 - ay0)
 
--- | return the point if all value are between the range
+-- | return the point if all value are between the range 1 and 0
 clamp :: Point        -- ^ Point to clap
       -> Maybe Point
 clamp (x, y) = let r = (,) <$> inRange x <*> inRange y
