@@ -26,11 +26,13 @@ handleKeys (EventKey (SpecialKey KeyRight) Up _ _) game =
 
 -- For an 'p' keypress, pause the game.
 handleKeys (EventKey (Char 'p') Up _ _) game@ Game { gameState = Playing } =
-  game { gameState = Paused }
+      game { gameState = Paused }
 handleKeys (EventKey (Char 'p') Up _ _) game@ Game { gameState = Paused } =
-  game { gameState = Playing }
+      game { gameState = Playing }
 
-
+-- For an 'enter' keypress, start the game.
+handleKeys (EventKey (SpecialKey KeyEnter) Down _ _) game@ Game { gameState = MainMenu } =
+      game { gameState = Playing }
 
 -- Do nothing for all other events.
 handleKeys _ game = game

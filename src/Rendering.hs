@@ -8,10 +8,6 @@ import GameBoard
 import Graphics.Gloss hiding (Vector)
 
 
---Make stateText
-mkStateText :: Color -> String -> Position -> Picture
-mkStateText col text (x, y) = translate (-120) 0 $ scale x y $ color col $ Text text
-
 -- | render dot that indicate the potential hiting point
 renderDot :: Color    -- ^ dot color
           -> Position -- ^ dot position
@@ -23,8 +19,9 @@ renderDot c (x, y) radius = translate x y $ color c $  circleSolid radius
 renderStateText :: Color  -- ^ Text color
             -> String     -- ^ Text
             -> Position   -- ^ Text position
+            -> (Float, Float) -- ^ Text scale
             -> Picture    -- ^ Picture of the text
-renderStateText col text (x, y) = translate (-120) 0 $ scale x y $ color col $ Text text
+renderStateText col text (x, y) (sx, sy) = translate x y $ scale sx sy $ color col $ Text text
 
 -- | render wall
 renderWall :: Color       -- ^ Wall's color
@@ -61,10 +58,18 @@ renderPaddle c w h (x, y) = translate x y $ color c $ rectangleSolid w h
 renderGame :: Game      -- ^ The game state to render
            -> Picture   -- ^ A picture of this game state
 
+-- MainMenu state
+renderGame game @ Game { gameState = MainMenu } = pictures
+      [ renderStateText orange "Haskell" (-120, 100) (0.5, 0.5)
+      , renderStateText orange "Breakout" (-120, 0) (0.5, 0.5)
+      , renderStateText orange "Press START to continu" (-200, -100) (0.25, 0.25)
+      ]
+
 -- Paused state
 renderGame game @ Game { gameState = Paused } =
-      mkStateText orange "PAUSED" (0.5, 0.5)
+      renderStateText orange "PAUSED" (-120, 0) (0.5, 0.5)
 
+-- Playing state
 renderGame game @ Game { gameState = Playing } = pictures
       [ renderBall (dark red) 10 (ballLoc game)
       , renderWall wallColor gameWidth wallWidth wallUpPos

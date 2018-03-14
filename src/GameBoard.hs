@@ -72,7 +72,7 @@ type Rectangle = (Position, Width, Height)
 
 -- | The game state
 data GameState =
-  Playing | Paused
+  Playing | Paused | MainMenu
   deriving Show
 
 -- | Brick
@@ -100,7 +100,7 @@ data Game = Game
 -- | initial state of the game
 initialState :: Game
 initialState = Game
-    { gameState = Playing
+    { gameState = MainMenu
     , ballLoc = (0, -200)
     , ballVel = (50, -150)
     , ballDot = (0, 0)

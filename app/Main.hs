@@ -25,6 +25,9 @@ update seconds game @ Game { gameState = Playing } =
 -- Game paused
 update seconds game @ Game { gameState = Paused } = game
 
+-- Game paused
+update seconds game @ Game { gameState = MainMenu } = game
+
 
 -- | Window
 window :: Display
