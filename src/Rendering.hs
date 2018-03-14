@@ -8,6 +8,10 @@ import GameBoard
 import Graphics.Gloss hiding (Vector)
 
 
+--Make stateText
+mkStateText :: Color -> String -> Position -> Picture
+mkStateText col text (x, y) = translate (-120) 0 $ scale x y $ color col $ Text text
+
 -- | render dot that indicate the potential hiting point
 renderDot :: Color    -- ^ dot color
           -> Position -- ^ dot position
@@ -56,7 +60,12 @@ renderPaddle c w h (x, y) = translate x y $ color c $ rectangleSolid w h
 -- | render the game
 renderGame :: Game      -- ^ The game state to render
            -> Picture   -- ^ A picture of this game state
-renderGame game = pictures
+
+-- Paused state
+renderGame game @ Game { gameState = Paused } =
+      mkStateText orange "PAUSED" (0.5, 0.5)
+
+renderGame game @ Game { gameState = Playing } = pictures
       [ renderBall (dark red) 10 (ballLoc game)
       , renderWall wallColor gameWidth wallWidth wallUpPos
       , renderWall wallColor gameWidth wallWidth wallDownPos

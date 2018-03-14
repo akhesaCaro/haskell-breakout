@@ -15,6 +15,7 @@ module GameBoard
     , Brick(..)
     , Game (..)
     , Paddle (..)
+    , GameState (..)
     , initialState
     ) where
 
@@ -69,6 +70,11 @@ type Width = Float
 type Height = Float
 type Rectangle = (Position, Width, Height)
 
+-- | The game state
+data GameState =
+  Playing | Paused
+  deriving Show
+
 -- | Brick
 data Brick = Brick
     { brickLoc :: Position  -- ^ brick (x, y) location
@@ -83,7 +89,8 @@ data Paddle = Paddle
 
 -- | Game
 data Game = Game
-    { ballLoc :: Position   -- ^ ball (x, y) location.
+    { gameState :: GameState
+    , ballLoc :: Position   -- ^ ball (x, y) location.
     , ballVel :: Velocity   -- ^ ball (x, y) velocity
     , ballDot :: Position   -- ^ velocity indicator
     , bricks :: [Brick]     -- ^ bricks list
@@ -93,7 +100,8 @@ data Game = Game
 -- | initial state of the game
 initialState :: Game
 initialState = Game
-    { ballLoc = (0, -200)
+    { gameState = Playing
+    , ballLoc = (0, -200)
     , ballVel = (50, -150)
     , ballDot = (0, 0)
     , bricks = [ Brick {brickLoc = (-300, 300), brickCol = yellow}

@@ -17,8 +17,14 @@ background = black
 update :: Float   -- ^ The number of seconds since last update
        -> Game    -- ^ The intial game state
        -> Game    -- ^ A new game state with an updated ball and paddles positions.
-update seconds =
-        movePaddle . bricksBounce seconds . moveBall seconds . collisionBounce seconds . computeDot
+
+-- Game playing
+update seconds game @ Game { gameState = Playing } =
+        movePaddle . bricksBounce seconds . moveBall seconds . collisionBounce seconds . computeDot $ game
+
+-- Game paused
+update seconds game @ Game { gameState = Paused } = game
+
 
 -- | Window
 window :: Display

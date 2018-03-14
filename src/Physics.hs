@@ -7,7 +7,6 @@ module Physics
   , computeDot
   , collisionBounce
   , bricksBounce
-  , updatePaddleVel
   ) where
 
 import GameBoard
@@ -15,7 +14,6 @@ import CollisionDetection
 
 import Data.Maybe
 
-import Debug.Trace
 
 
 -- aliases
@@ -125,34 +123,3 @@ movePaddle game
         halfPaddle = paddleWidth / 2
         leftGameBorder = -(gameWidth / 2) + wallWidth / 2
         rightGameBorder = gameWidth / 2 - wallWidth / 2
-
--- | Update the paddle position
-movePaddle' :: Game  -- ^ Initial game state
-           -> Game  -- ^ Game paddle position updated
-movePaddle' game
-      -- | No step , no mouvement
-      | vel == 0 = game
-      -- |
-      | otherwise =
-              let newLoc = (x + (paddleStep *  vel), y) in
-              game { paddle = (paddle game) { paddleLoc = newLoc }}
-      where
-        (x, y) = paddleLoc $ paddle game
-        vel = fst $ paddleVel $ paddle game
-
-updatePaddleVel :: Seconds
-                -> Game
-                -> Game
-updatePaddleVel seconds game = case newSpeed of
-            Nothing -> game
-            Just (nsX, nsY) -> game { paddle = (paddle game) { paddleVel = (nsX / seconds , nsY / seconds) } }
-        where
-          (x, y) = paddleLoc $ paddle game
-          (vx, vy) = paddleVel $ paddle game
-          dotLoc :: Position
-          dotLoc = (x - paddleWidth / 2, y)
-          dotSpeed :: Speed
-          dotSpeed = (vx * seconds, vy * seconds)
-          rectangle :: Rectangle
-          rectangle = ((x, y), paddleWidth, paddleHeight)
-          newSpeed = traceShowId $ rectangleDotCollision dotLoc dotSpeed rectangle
