@@ -40,7 +40,7 @@ paddleWidth = 100
 
 -- | speed ration (when the ball hits a brick)
 speedRatio, paddleStep :: Float
-speedRatio = 1.5
+speedRatio = 1.25
 paddleStep = 5
 
 -- | all the heights : brick, game, paddle
@@ -94,7 +94,7 @@ data Game = Game
 initialState :: Game
 initialState = Game
     { ballLoc = (0, -200)
-    , ballVel = (40, -140)
+    , ballVel = (50, -150)
     , ballDot = (0, 0)
     , bricks = [ Brick {brickLoc = (-300, 300), brickCol = yellow}
                , Brick {brickLoc = (0, 0), brickCol = blue}
