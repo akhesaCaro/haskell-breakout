@@ -16,24 +16,24 @@ renderDot :: Color    -- ^ dot color
 renderDot c (x, y) radius = translate x y $ color c $  circleSolid radius
 
 -- | render state text
-renderStateText :: Color      -- ^ Text color
+renderStateText :: Color  -- ^ Text color
             -> String     -- ^ Text
             -> Position   -- ^ Text position
             -> Picture    -- ^ Picture of the text
 renderStateText col text (x, y) = translate (-120) 0 $ scale x y $ color col $ Text text
 
 -- | render wall
-renderWall :: Color           -- ^ Wall's color
+renderWall :: Color       -- ^ Wall's color
        -> Width           -- ^ Wall's width
        -> Height          -- ^ Wall's height
-       -> Position  -- ^ Wall's center
+       -> Position        -- ^ Wall's center
        -> Picture         -- ^ Wall's picture
 renderWall col width height (x , y) =
       translate x y $ color col $ rectangleSolid width height
 
 -- | render ball
-renderBall :: Color   -- ^ Ball's color
-       -> Radius   -- ^ Ball's radius
+renderBall :: Color       -- ^ Ball's color
+       -> Radius          -- ^ Ball's radius
        -> (Float, Float)  -- ^ Ball's center
        -> Picture         -- ^ Picture of this ball
 renderBall col radius (x, y) = translate x y  $ color col $ circleSolid radius
@@ -46,7 +46,7 @@ renderBrick b = translate x y $ color (brickCol b) $ rectangleSolid brickWidth b
         (x, y) = brickLoc b
 
 -- render paddle
-renderPaddle :: Color     -- ^ the paddle color
+renderPaddle :: Color -- ^ the paddle color
         -> Width      -- ^ paddle width
         -> Height     -- ^ paddle height
         -> Position   -- ^ paddle position

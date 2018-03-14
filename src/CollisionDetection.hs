@@ -1,6 +1,8 @@
 module CollisionDetection
   ( bricksCollision
+  , rectangleDotCollision
   , rectanglesDotCollision
+  , Speed
   ) where
 
 import GameBoard
@@ -14,8 +16,8 @@ type Speed = (Float, Float)
 
 -- | Calculate if there a hit between the ball and one of the brick
 --   the system the list of bricks updated and the new speed of the ball
-bricksCollision :: Position  -- ^ ball position
-                 -> Speed     -- ^ ball speed (velocity * seconds since last update)
+bricksCollision :: Position   -- ^ dot position
+                 -> Speed     -- ^ object speed (velocity * seconds since last update)
                  -> [Brick]   -- ^ list of bricks
                  -> (Maybe Speed, [Brick])
 bricksCollision ballCenter ballSpeed bricks = go ballCenter ballSpeed bricks (Nothing, [])
@@ -31,50 +33,51 @@ bricksCollision ballCenter ballSpeed bricks = go ballCenter ballSpeed bricks (No
               where
               collision = rectangleDotCollision ballCenter ballSpeed (brickLoc brick, brickWidth, brickHeight)
 
--- | Calculate the velocity vector of the collision if there is a collision
---   with the ball and any of rectangle in the list
-rectanglesDotCollision :: Position        -- ^ Ball center position
-                       -> Velocity        -- ^ Ball velocity
+-- | Calculate the speed vector of the collision if there is a collision
+--   with the dot and any of rectangle in the list
+rectanglesDotCollision :: Position        -- ^ dot position
+                       -> Speed           -- ^ object speed
                        -> [Rectangle]     -- ^ list of rectangle (to check for the collision)
-                       -> Velocity  -- ^ velocity if a collision with one of the rectangme
-rectanglesDotCollision p vel rectangles = case velocityLst of
-                              []      -> vel
-                              (v:vs)  -> v
+                       -> Speed           -- ^ new speed if a collision with one of the rectangle
+rectanglesDotCollision p speed rectangles = case speedLst of
+                              -- no hits, no new speed
+                              []      -> speed
+                              (s:ss)  -> s
                               where
-                              velocityLst :: [Velocity]
-                              velocityLst = catMaybes $ fmap (rectangleDotCollision p vel) rectangles
+                              speedLst :: [Speed]
+                              speedLst = catMaybes $ fmap (rectangleDotCollision p speed) rectangles
 
 -- | Calculate with the scalar dot product on which side there is
 --   a collision or nothing if there is no collision
-rectangleDotCollision :: Position     -- ^ dot position
-                      -> Velocity     -- ^ dot velocity
-                      -> Rectangle    -- ^ Rentangle
-                      -> Maybe Velocity  -- ^ new circle velocity
-rectangleDotCollision ballDot ballVelocity@(vx, vy)
+rectangleDotCollision :: Position        -- ^ dot position
+                      -> Speed           -- ^ dot speed
+                      -> Rectangle       -- ^ Rentangle
+                      -> Maybe Speed     -- ^ new object speed
+rectangleDotCollision dotPoint speed@(sx, sy)
   ((rectX, rectY), rectW, rectH)
       -- if scalar product < 0 means there is a collision, so we calculate de collision point
       | scalarProductTopSide < 0 &&
-              isJust (intersecPoint ballVelocity ballDot (rectW, 0) cornerTopLeft)
-                = Just (vx, -vy)
+              isJust (intersecPoint speed dotPoint (rectW, 0) cornerTopLeft)
+                = Just (sx, -sy)
       | scalarProductBottomSide < 0 &&
-              isJust (intersecPoint ballVelocity ballDot (rectW, 0) cornerBottomLeft)
-                = Just (vx, -vy)
+              isJust (intersecPoint speed dotPoint (rectW, 0) cornerBottomLeft)
+                = Just (sx, -sy)
       | scalarProductLeftSide < 0 &&
-              isJust (intersecPoint ballVelocity ballDot (0, -rectH) cornerTopLeft)
-                = Just (-vx, vy)
+              isJust (intersecPoint speed dotPoint (0, -rectH) cornerTopLeft)
+                = Just (-sx, sy)
       | scalarProductRightSide < 0 &&
-              isJust (intersecPoint ballVelocity ballDot (0, -rectH) cornerTopRight)
-                = Just (-vx, vy)
+              isJust (intersecPoint speed dotPoint (0, -rectH) cornerTopRight)
+                = Just (-sx, sy)
       | otherwise = Nothing
       where
         -- scalar product with normal vector of rectangle top side
-        scalarProductTopSide = ballVelocity `dot` (0, 1)
+        scalarProductTopSide = speed `dot` (0, 1)
         -- scalar product with normal vector of rectangle bottom side
-        scalarProductBottomSide = ballVelocity `dot` (0, -1)
+        scalarProductBottomSide = speed `dot` (0, -1)
         -- scalar product with normal vector of rectangle left side
-        scalarProductLeftSide = ballVelocity `dot` (-1, 0)
+        scalarProductLeftSide = speed `dot` (-1, 0)
         -- scalar product with normal vector of rectangle right side
-        scalarProductRightSide = ballVelocity `dot` (1, 0)
+        scalarProductRightSide = speed `dot` (1, 0)
         -- rectangle corner top left point
         cornerTopLeft = (rectX - rectW / 2, rectY + rectH / 2)
         -- rectangle corner top right point
