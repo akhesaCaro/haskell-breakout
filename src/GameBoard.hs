@@ -72,7 +72,7 @@ type Rectangle = (Position, Width, Height)
 
 -- | The game state
 data GameState =
-  Playing | Paused | MainMenu
+  MainMenu | Playing | Paused | GameOver
   deriving Show
 
 -- | Brick

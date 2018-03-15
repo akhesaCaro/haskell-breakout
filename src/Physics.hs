@@ -7,6 +7,7 @@ module Physics
   , computeDot
   , collisionBounce
   , bricksBounce
+  , isGameOver
   ) where
 
 import GameBoard
@@ -64,7 +65,7 @@ collisionBounce s game = game { ballVel = (nsX / s , nsY / s) }
         (nsX, nsY)  = rectanglesDotCollision ballD (ballVX * s, ballVY * s) rectangles
         rectangles = [ (paddleLoc $ paddle game, paddleWidth, paddleHeight)
                      , (wallUpPos, gameWidth, wallWidth)
-                     , (wallDownPos, gameWidth, wallWidth)
+                  --   , (wallDownPos, gameWidth, wallWidth)
                      , (wallLeftPos, wallWidth, gameHeight)
                      , (wallRightPos, wallWidth, gameHeight)
                      ]
@@ -123,3 +124,13 @@ movePaddle game
         halfPaddle = paddleWidth / 2
         leftGameBorder = -(gameWidth / 2) + wallWidth / 2
         rightGameBorder = gameWidth / 2 - wallWidth / 2
+
+
+-- | Verify if the game is over (ball outside the game)
+isGameOver :: Game  -- ^ Intial game state
+           -> Game  -- ^ Game updated
+isGameOver game
+      | y < -(gameHeight / 2) = game {gameState = GameOver}
+      | otherwise = game
+      where
+        (_, y) = ballLoc game

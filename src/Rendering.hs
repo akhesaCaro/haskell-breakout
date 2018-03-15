@@ -61,9 +61,13 @@ renderGame :: Game      -- ^ The game state to render
 -- MainMenu state
 renderGame game @ Game { gameState = MainMenu } = pictures
       [ renderStateText orange "Haskell" (-120, 100) (0.5, 0.5)
-      , renderStateText orange "Breakout" (-120, 0) (0.5, 0.5)
-      , renderStateText orange "Press START to continu" (-200, -100) (0.25, 0.25)
+      , renderStateText orange "Breakout" (-150, 0) (0.5, 0.5)
+      , renderStateText orange "Press ENTER to continu" (-200, -100) (0.25, 0.25)
       ]
+
+-- GameOver state
+renderGame game @ Game { gameState = GameOver } =
+      renderStateText orange "Game Over" (-170, 0) (0.5, 0.5)
 
 -- Paused state
 renderGame game @ Game { gameState = Paused } =
@@ -73,7 +77,7 @@ renderGame game @ Game { gameState = Paused } =
 renderGame game @ Game { gameState = Playing } = pictures
       [ renderBall (dark red) 10 (ballLoc game)
       , renderWall wallColor gameWidth wallWidth wallUpPos
-      , renderWall wallColor gameWidth wallWidth wallDownPos
+--      , renderWall wallColor gameWidth wallWidth wallDownPos
       , renderWall wallColor wallWidth gameHeight wallLeftPos
       , renderWall wallColor wallWidth gameHeight wallRightPos
       , pictures . fmap renderBrick $ bricks game
