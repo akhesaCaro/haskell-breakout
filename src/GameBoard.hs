@@ -113,7 +113,7 @@ initialState :: Game
 initialState = Game
     { gameState = MainMenu
     , ballLoc = (0, -200)
-    , ballVel = (50, -150)
+    , ballVel = (50, 150)
     , ballDot = (0, 0)
     , bricks = mkBricks
     , paddle = Paddle { paddleLoc = (0,-(gameHeight / 2) + 50)
