@@ -7,6 +7,11 @@ import GameBoard
 -- I want to use my own Vector.
 import Graphics.Gloss hiding (Vector)
 
+-- | Render score
+renderScore :: Score    -- ^ score to render
+            -> Picture  -- ^ picture of the score
+renderScore s = translate (-10) ((gameHeight / 2) - 50) $ scale 0.25 0.25 $ color blue $ Text (show s)
+
 
 -- | render dot that indicate the potential hiting point
 renderDot :: Color    -- ^ dot color
@@ -66,8 +71,11 @@ renderGame game @ Game { gameState = MainMenu } = pictures
       ]
 
 -- GameOver state
-renderGame game @ Game { gameState = GameOver } =
-      renderStateText orange "Game Over" (-170, 0) (0.5, 0.5)
+renderGame game @ Game { gameState = GameOver } = pictures
+      [ renderStateText orange "Game Over" (-170, 0) (0.5, 0.5)
+      , renderStateText orange "Score : " (-60 , -80) (0.25, 0.25)
+      , renderStateText orange (show $ gameScore game)  (70, -80) (0.25, 0.25)
+      ]
 
 -- Paused state
 renderGame game @ Game { gameState = Paused } =
@@ -83,6 +91,7 @@ renderGame game @ Game { gameState = Playing } = pictures
       , pictures . fmap renderBrick $ bricks game
       , renderPaddle paddleColor paddleWidth paddleHeight (paddleLoc $ paddle game)
       , renderDot white (ballDot game) 2
+      , renderScore (gameScore game)
       ]
       where
         wallColor = blue

@@ -84,11 +84,14 @@ bricksBounce :: Seconds   -- ^ Number of seconds since last update
               -> Game     -- ^ Game updated
 bricksBounce s game = case fst bc of
       Nothing -> game
-      Just (vx, vy) -> game {bricks = bricksUpdated, ballVel = speedUp (vx / s, vy / s)}
+      Just (vx, vy) -> game { bricks    = bricksUpdated
+                            , ballVel   = speedUp (vx / s, vy / s)
+                            , gameScore = addScore score }
       where
         bc = bricksCollision (ballLoc game) (vx * s, vy * s) (bricks game)
         (vx, vy) = ballVel game
         bricksUpdated = snd bc
+        score = gameScore game
 
 
 -- | Update the paddle position aand stop it if it goes throught the wall

@@ -2,11 +2,13 @@ module GameBoard
     ( winHeight, winWidth, offset
     , gameWidth, gameHeight
     , wallWidth
+    , addScore
     , brickWidth, brickHeight
     , ballRadius, speedRatio
     , wallUpPos, wallDownPos, wallLeftPos, wallRightPos
     , paddleWidth, paddleHeight, paddleStep
     , Position
+    , Score
     , Radius
     , Velocity
     , Width
@@ -43,6 +45,8 @@ paddleWidth = 100
 speedRatio, paddleStep :: Float
 speedRatio = 1.25
 paddleStep = 5
+brickStepX = brickWidth + 10
+brickStepY = brickHeight + 10
 
 -- | all the heights : brick, game, paddle
 brickHeight, gameHeight, paddleHeight :: Height
@@ -63,6 +67,7 @@ wallRightPos = (gameWidth / 2, 0)   -- ^ right wall position
 
 
 -- | aliases
+type Score = Integer
 type Radius = Float
 type Velocity = (Float, Float)
 type Position = (Float, Float)
@@ -89,28 +94,37 @@ data Paddle = Paddle
 
 -- | Game
 data Game = Game
-    { gameState :: GameState
-    , ballLoc :: Position   -- ^ ball (x, y) location.
-    , ballVel :: Velocity   -- ^ ball (x, y) velocity
-    , ballDot :: Position   -- ^ velocity indicator
-    , bricks :: [Brick]     -- ^ bricks list
-    , paddle :: Paddle      -- ^ paddle
+    { gameState :: GameState  -- ^ game state
+    , gameScore :: Score      -- ^ game score
+    , ballLoc :: Position     -- ^ ball (x, y) location.
+    , ballVel :: Velocity     -- ^ ball (x, y) velocity
+    , ballDot :: Position     -- ^ velocity indicator
+    , bricks :: [Brick]       -- ^ bricks list
+    , paddle :: Paddle        -- ^ paddle
     } deriving Show
+
+
+mkBricks :: [Brick]
+mkBricks = map (flip Brick col) brickPos
+      where
+        grid = (,) <$> [-3..3] <*> [1..6]
+        brickPos = map (\(x, y) -> (x*brickStepX, y*brickStepY)) grid
+        col = yellow
+
+-- | Add one point to the score
+addScore :: Score  -- ^ initial score
+         -> Score  -- ^ updated score
+addScore = (+10)
 
 -- | initial state of the game
 initialState :: Game
 initialState = Game
     { gameState = MainMenu
+    , gameScore = 0
     , ballLoc = (0, -200)
-    , ballVel = (50, -150)
+    , ballVel = (50, 150)
     , ballDot = (0, 0)
-    , bricks = [ Brick {brickLoc = (-300, 300), brickCol = yellow}
-               , Brick {brickLoc = (0, 0), brickCol = blue}
-               , Brick {brickLoc = (50, 50), brickCol = magenta}
-               , Brick {brickLoc = (0, 300), brickCol = magenta}
-               , Brick {brickLoc = (-200, 100), brickCol = yellow}
-               , Brick {brickLoc = (-250, -250), brickCol = yellow}
-               ]
+    , bricks = mkBricks
     , paddle = Paddle { paddleLoc = (0,-(gameHeight / 2) + 50)
                       , paddleVel = (0,0)
                       }
