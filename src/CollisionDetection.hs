@@ -11,7 +11,7 @@ import Maths
 import Data.Maybe
 
 
--- aliases
+-- Aliases
 type Speed = (Float, Float)
 
 -- | Calculate if there a hit between the ball and one of the brick
@@ -31,7 +31,9 @@ bricksCollision ballCenter ballSpeed bricks = go ballCenter ballSpeed bricks (No
               Nothing -> go ballCenter ballSpeed bs (speed, brick:brickLts)
               _ -> (collision, brickLts ++ bs)
               where
-              collision = rectangleDotCollision ballCenter ballSpeed (brickLoc brick, brickWidth, brickHeight)
+              collision
+                    = rectangleDotCollision ballCenter ballSpeed
+                      (brickLoc brick, brickWidth, brickHeight)
 
 -- | Calculate the speed vector of the collision if there is a collision
 --   with the dot and any of rectangle in the list
