@@ -17,26 +17,21 @@ background = black
 
 -- | Update the game by moving the ball and bouncing off walls.
 update :: Float   -- ^ The number of seconds since last update
-       -> Game    -- ^ The initial game state
+       -> Game    -- ^ current game state
        -> Game    -- ^ A new game state with an updated ball and paddles positions.
 
 -- Game playing
 update seconds game @ Game { gameState = Playing }
       = isGameOver
       . movePaddle
+      . paddleBounce seconds
       . bricksBounce seconds
       . moveBall seconds
       . collisionBounce seconds
       . computeDot $ game
 
--- Game paused
-update seconds game @ Game { gameState = Paused } = game
-
--- Game paused
-update seconds game @ Game { gameState = MainMenu } = game
-
--- Game over
-update seconds game @ Game { gameState = GameOver } = game
+-- Game in a main menu state /  Game over / Game paused
+update _ game  = game
 
 
 -- | Window

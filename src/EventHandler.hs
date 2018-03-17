@@ -12,7 +12,7 @@ import System.Exit
 
 -- | Pure responding to key events.
 handleKeys :: Event     -- ^ keyEvent
-           -> Game      -- ^ Initial game state
+           -> Game      -- ^ current game state
            -> Game      -- ^ Game updated
 -- For an 'Left' or 'Right' keypress, move verticaly player1 paddle
 handleKeys (EventKey (SpecialKey KeyLeft) Down _ _) game =
