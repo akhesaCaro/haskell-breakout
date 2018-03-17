@@ -8,15 +8,18 @@ module GameBoard
     , paddleWidth, paddleHeight, paddleStep
     , Position
     , Radius
+    , Velocity
     , Width
     , Height
+    , Rectangle
     , Brick(..)
     , Game (..)
     , Paddle (..)
     , initialState
     ) where
 
-import Graphics.Gloss
+-- I want to use my own Vector.
+import Graphics.Gloss  hiding (Vector)
 
 -- | position of the window on the screen
 offset:: Int
@@ -37,7 +40,7 @@ paddleWidth = 100
 
 -- | speed ration (when the ball hits a brick)
 speedRatio, paddleStep :: Float
-speedRatio = 1.5
+speedRatio = 1.25
 paddleStep = 5
 
 -- | all the heights : brick, game, paddle
@@ -54,8 +57,8 @@ ballRadius = 10
 wallUpPos, wallDownPos, wallLeftPos, wallRightPos :: Position
 wallUpPos    = (0, gameHeight / 2)     -- ^ top wall position
 wallDownPos  = (0,-(gameHeight/ 2))    -- ^ botom wall position
-wallLeftPos  = (gameWidth / 2 , 0)     -- ^ left wall position
-wallRightPos = (-(gameWidth / 2), 0)   -- ^ right wall position
+wallLeftPos  = (-(gameWidth / 2) , 0)     -- ^ left wall position
+wallRightPos = (gameWidth / 2, 0)   -- ^ right wall position
 
 
 -- | aliases
@@ -64,6 +67,7 @@ type Velocity = (Float, Float)
 type Position = (Float, Float)
 type Width = Float
 type Height = Float
+type Rectangle = (Position, Width, Height)
 
 -- | Brick
 data Brick = Brick
@@ -81,6 +85,7 @@ data Paddle = Paddle
 data Game = Game
     { ballLoc :: Position   -- ^ ball (x, y) location.
     , ballVel :: Velocity   -- ^ ball (x, y) velocity
+    , ballDot :: Position   -- ^ velocity indicator
     , bricks :: [Brick]     -- ^ bricks list
     , paddle :: Paddle      -- ^ paddle
     } deriving Show
@@ -88,8 +93,9 @@ data Game = Game
 -- | initial state of the game
 initialState :: Game
 initialState = Game
-    { ballLoc = (0, 0)
-    , ballVel = (40, -140)
+    { ballLoc = (0, -200)
+    , ballVel = (50, -150)
+    , ballDot = (0, 0)
     , bricks = [ Brick {brickLoc = (-300, 300), brickCol = yellow}
                , Brick {brickLoc = (0, 0), brickCol = blue}
                , Brick {brickLoc = (50, 50), brickCol = magenta}

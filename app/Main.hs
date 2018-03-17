@@ -5,10 +5,11 @@ import  GameBoard
 import  Physics
 import  Rendering
 
-import  Graphics.Gloss
+-- I want to use my own Vector.
+import  Graphics.Gloss hiding (Vector)
 import  Graphics.Gloss.Data.ViewPort
 
--- | Window Background Color
+-- | Window Backgrohjund Color
 background :: Color
 background = black
 
@@ -17,7 +18,7 @@ update :: Float   -- ^ The number of seconds since last update
        -> Game    -- ^ The intial game state
        -> Game    -- ^ A new game state with an updated ball and paddles positions.
 update seconds =
-      paddleBounce . movePaddle . bricksBounce . wallBounce . moveBall seconds
+        movePaddle . bricksBounce seconds . moveBall seconds . collisionBounce seconds . computeDot
 
 -- | Window
 window :: Display
