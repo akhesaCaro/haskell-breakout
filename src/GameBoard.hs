@@ -43,6 +43,8 @@ paddleWidth = 100
 speedRatio, paddleStep :: Float
 speedRatio = 1.25
 paddleStep = 5
+brickStepX = brickWidth + 10
+brickStepY = brickHeight + 10
 
 -- | all the heights : brick, game, paddle
 brickHeight, gameHeight, paddleHeight :: Height
@@ -97,6 +99,15 @@ data Game = Game
     , paddle :: Paddle      -- ^ paddle
     } deriving Show
 
+
+mkBricks :: [Brick]
+mkBricks = map (flip Brick col) brickPos
+      where
+        grid = (,) <$> [-3..3] <*> [1..6]
+        brickPos = map (\(x, y) -> (x*brickStepX, y*brickStepY)) grid
+        col = yellow
+
+
 -- | initial state of the game
 initialState :: Game
 initialState = Game
@@ -104,13 +115,7 @@ initialState = Game
     , ballLoc = (0, -200)
     , ballVel = (50, -150)
     , ballDot = (0, 0)
-    , bricks = [ Brick {brickLoc = (-300, 300), brickCol = yellow}
-               , Brick {brickLoc = (0, 0), brickCol = blue}
-               , Brick {brickLoc = (50, 50), brickCol = magenta}
-               , Brick {brickLoc = (0, 300), brickCol = magenta}
-               , Brick {brickLoc = (-200, 100), brickCol = yellow}
-               , Brick {brickLoc = (-250, -250), brickCol = yellow}
-               ]
+    , bricks = mkBricks
     , paddle = Paddle { paddleLoc = (0,-(gameHeight / 2) + 50)
                       , paddleVel = (0,0)
                       }
