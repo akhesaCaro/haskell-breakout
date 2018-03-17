@@ -2,11 +2,13 @@ module GameBoard
     ( winHeight, winWidth, offset
     , gameWidth, gameHeight
     , wallWidth
+    , addScore
     , brickWidth, brickHeight
     , ballRadius, speedRatio
     , wallUpPos, wallDownPos, wallLeftPos, wallRightPos
     , paddleWidth, paddleHeight, paddleStep
     , Position
+    , Score
     , Radius
     , Velocity
     , Width
@@ -65,6 +67,7 @@ wallRightPos = (gameWidth / 2, 0)   -- ^ right wall position
 
 
 -- | aliases
+type Score = Integer
 type Radius = Float
 type Velocity = (Float, Float)
 type Position = (Float, Float)
@@ -91,12 +94,13 @@ data Paddle = Paddle
 
 -- | Game
 data Game = Game
-    { gameState :: GameState
-    , ballLoc :: Position   -- ^ ball (x, y) location.
-    , ballVel :: Velocity   -- ^ ball (x, y) velocity
-    , ballDot :: Position   -- ^ velocity indicator
-    , bricks :: [Brick]     -- ^ bricks list
-    , paddle :: Paddle      -- ^ paddle
+    { gameState :: GameState  -- ^ game state
+    , gameScore :: Score      -- ^ game score
+    , ballLoc :: Position     -- ^ ball (x, y) location.
+    , ballVel :: Velocity     -- ^ ball (x, y) velocity
+    , ballDot :: Position     -- ^ velocity indicator
+    , bricks :: [Brick]       -- ^ bricks list
+    , paddle :: Paddle        -- ^ paddle
     } deriving Show
 
 
@@ -107,11 +111,16 @@ mkBricks = map (flip Brick col) brickPos
         brickPos = map (\(x, y) -> (x*brickStepX, y*brickStepY)) grid
         col = yellow
 
+-- | Add one point to the score
+addScore :: Score  -- ^ initial score
+         -> Score  -- ^ updated score
+addScore = (+10)
 
 -- | initial state of the game
 initialState :: Game
 initialState = Game
     { gameState = MainMenu
+    , gameScore = 0
     , ballLoc = (0, -200)
     , ballVel = (50, 150)
     , ballDot = (0, 0)
