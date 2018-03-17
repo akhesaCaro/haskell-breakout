@@ -19,8 +19,9 @@ renderDot c (x, y) radius = translate x y $ color c $  circleSolid radius
 renderStateText :: Color  -- ^ Text color
             -> String     -- ^ Text
             -> Position   -- ^ Text position
+            -> (Float, Float) -- ^ Text scale
             -> Picture    -- ^ Picture of the text
-renderStateText col text (x, y) = translate (-120) 0 $ scale x y $ color col $ Text text
+renderStateText col text (x, y) (sx, sy) = translate x y $ scale sx sy $ color col $ Text text
 
 -- | render wall
 renderWall :: Color       -- ^ Wall's color
@@ -56,10 +57,27 @@ renderPaddle c w h (x, y) = translate x y $ color c $ rectangleSolid w h
 -- | render the game
 renderGame :: Game      -- ^ The game state to render
            -> Picture   -- ^ A picture of this game state
-renderGame game = pictures
+
+-- MainMenu state
+renderGame game @ Game { gameState = MainMenu } = pictures
+      [ renderStateText orange "Haskell" (-120, 100) (0.5, 0.5)
+      , renderStateText orange "Breakout" (-150, 0) (0.5, 0.5)
+      , renderStateText orange "Press ENTER to continu" (-200, -100) (0.25, 0.25)
+      ]
+
+-- GameOver state
+renderGame game @ Game { gameState = GameOver } =
+      renderStateText orange "Game Over" (-170, 0) (0.5, 0.5)
+
+-- Paused state
+renderGame game @ Game { gameState = Paused } =
+      renderStateText orange "PAUSED" (-120, 0) (0.5, 0.5)
+
+-- Playing state
+renderGame game @ Game { gameState = Playing } = pictures
       [ renderBall (dark red) 10 (ballLoc game)
       , renderWall wallColor gameWidth wallWidth wallUpPos
-      , renderWall wallColor gameWidth wallWidth wallDownPos
+--      , renderWall wallColor gameWidth wallWidth wallDownPos
       , renderWall wallColor wallWidth gameHeight wallLeftPos
       , renderWall wallColor wallWidth gameHeight wallRightPos
       , pictures . fmap renderBrick $ bricks game

@@ -24,5 +24,15 @@ handleKeys (EventKey (SpecialKey KeyRight) Down _ _) game =
 handleKeys (EventKey (SpecialKey KeyRight) Up _ _) game =
       game { paddle = (paddle game) { paddleVel = (0 , 0) }}
 
+-- For an 'p' keypress, pause the game.
+handleKeys (EventKey (Char 'p') Up _ _) game@ Game { gameState = Playing } =
+      game { gameState = Paused }
+handleKeys (EventKey (Char 'p') Up _ _) game@ Game { gameState = Paused } =
+      game { gameState = Playing }
+
+-- For an 'enter' keypress, start the game.
+handleKeys (EventKey (SpecialKey KeyEnter) Down _ _) game@ Game { gameState = MainMenu } =
+      game { gameState = Playing }
+
 -- Do nothing for all other events.
 handleKeys _ game = game
