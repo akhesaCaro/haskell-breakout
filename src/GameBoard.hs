@@ -112,11 +112,11 @@ mkBricks = map (flip Brick col) brickPos
         col = yellow
 
 -- | Add one point to the score
-addScore :: Score  -- ^ initial score
+addScore :: Score  -- ^ current score
          -> Score  -- ^ updated score
 addScore = (+10)
 
--- | initial state of the game
+-- | initial game state
 initialState :: Game
 initialState = Game
     { gameState = MainMenu
