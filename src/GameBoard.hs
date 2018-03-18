@@ -69,6 +69,7 @@ wallRightPos = (gameWidth / 2, 0)   -- ^ right wall position
 -- | aliases
 type Score = Integer
 type Radius = Float
+type Level = [Brick]
 type Velocity = (Float, Float)
 type Position = (Float, Float)
 type Width = Float
@@ -103,20 +104,20 @@ data Game = Game
     , paddle :: Paddle        -- ^ paddle
     } deriving Show
 
-
-mkBricks :: [Brick]
-mkBricks = map (flip Brick col) brickPos
+-- | Create the first level
+levelOne :: Level
+levelOne = map (flip Brick col) brickPos
       where
         grid = (,) <$> [-3..3] <*> [1..6]
         brickPos = map (\(x, y) -> (x*brickStepX, y*brickStepY)) grid
         col = yellow
 
--- | Add one point to the score
-addScore :: Score  -- ^ initial score
+-- | Add brick points to score.
+addScore :: Score  -- ^ current score
          -> Score  -- ^ updated score
 addScore = (+10)
 
--- | initial state of the game
+-- | initial game state
 initialState :: Game
 initialState = Game
     { gameState = MainMenu
@@ -124,7 +125,7 @@ initialState = Game
     , ballLoc = (0, -200)
     , ballVel = (50, 150)
     , ballDot = (0, 0)
-    , bricks = mkBricks
+    , bricks = levelOne
     , paddle = Paddle { paddleLoc = (0,-(gameHeight / 2) + 50)
                       , paddleVel = (0,0)
                       }

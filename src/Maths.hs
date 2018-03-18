@@ -29,7 +29,8 @@ cramer ((v1x, v1y), (v2x, v2y)) (rx, ry) =
       where
         det = determinant ((v1x, v1y), (v2x, v2y))
 
--- | return, if exist, the intersection point between 2 vectors construct each one with a point and a vector
+-- | Return, if it exists, the intersection point between 2 segments defined
+--   by a starting point and a direction vector.
 intersecPoint :: Vector       -- ^ vector v
               -> Point        -- ^ vector v starting point
               -> Vector       -- ^ vector ab
