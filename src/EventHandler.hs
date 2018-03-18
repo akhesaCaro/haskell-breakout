@@ -27,8 +27,7 @@ handleKeys (EventKey (SpecialKey KeyRight) Up _ _) game =
 
 -- Moving mouse event , move verticaly the paddle
 handleKeys (EventMotion (x, _)) game
-        = game { paddle = (paddle game) { paddleLoc = (x , py)
-                                        , paddleVel = (x - px , 0)}
+        = game { paddle = (paddle game) { paddleVel = (x - px , 0)}
                                         , mouseEvent = True }
           where
             (px, py) = paddleLoc (paddle game)
