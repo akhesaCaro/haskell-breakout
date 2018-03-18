@@ -112,7 +112,7 @@ levelOne = map (flip Brick col) brickPos
         brickPos = map (\(x, y) -> (x*brickStepX, y*brickStepY)) grid
         col = yellow
 
--- | add one brick point
+-- | Add brick points to score.
 addScore :: Score  -- ^ current score
          -> Score  -- ^ updated score
 addScore = (+10)
