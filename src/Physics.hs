@@ -147,6 +147,7 @@ movePaddle game
         halfPaddle = paddleWidth / 2
         leftGameBorder = -(gameWidth / 2) + wallWidth / 2
         rightGameBorder = gameWidth / 2 - wallWidth / 2
+        paddleStep = 1
 
 
 -- | Verify if the game is over (ball outside the game)

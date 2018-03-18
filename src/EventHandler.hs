@@ -28,14 +28,10 @@ handleKeys (EventKey (SpecialKey KeyRight) Up _ _) game =
 -- Moving mouse event , move verticaly the paddle
 handleKeys (EventMotion (x, _)) game
         = game { paddle = (paddle game) { paddleLoc = (x , py)
-                                        , paddleVel = (nwvx , 0)}
+                                        , paddleVel = (x - px , 0)}
                                         , mouseEvent = True }
           where
             (px, py) = paddleLoc (paddle game)
-            nwvx =  case x - px of
-                        0   -> 0
-                        x | x > 0 -> 1
-                        x | x < 0 -> -1
 
 
 -- For an 'p' keypress, pause the game.

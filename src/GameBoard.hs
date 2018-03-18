@@ -6,7 +6,7 @@ module GameBoard
     , brickWidth, brickHeight
     , ballRadius, speedRatio
     , wallUpPos, wallDownPos, wallLeftPos, wallRightPos
-    , paddleWidth, paddleHeight, paddleStep
+    , paddleWidth, paddleHeight
     , Position
     , Score
     , Radius
@@ -43,9 +43,8 @@ brickWidth = 100
 paddleWidth = 100
 
 -- | speed ration (when the ball hits a brick)
-speedRatio, paddleStep :: Float
+speedRatio :: Float
 speedRatio = 1.025
-paddleStep = 1
 brickStepX = brickWidth + 10
 brickStepY = brickHeight + 10
 
