@@ -28,7 +28,7 @@ update seconds game @ Game { gameState = Playing }
       . paddleBounce seconds
       . bricksBounce seconds
       . moveBall seconds
-      . collisionBounce seconds
+      . wallsBounce seconds
       . bricksBounce seconds
       . computeDot $ game
 

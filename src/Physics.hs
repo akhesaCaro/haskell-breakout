@@ -5,7 +5,7 @@ module Physics
   , speedUp
   , movePaddle
   , computeDot
-  , collisionBounce
+  , wallsBounce
   , bricksBounce
   , isGameOver
   , paddleBounce
@@ -109,10 +109,10 @@ paddleBounce s game = case nws of
                               --(paddleLoc $ paddle game, paddleWidth, paddleHeight)
 
 -- | Detect collision on the walls and change ball velocity
-collisionBounce :: Seconds   -- ^ seconds since last update
+wallsBounce :: Seconds   -- ^ seconds since last update
                  -> Game     -- ^ current game state
                  -> Game     -- ^ game updated
-collisionBounce s game =
+wallsBounce s game =
       case collisions of
           [] -> game
           (x:xs) -> game { ballVel = collisionToSpeed x (ballVX, ballVY) }
@@ -121,14 +121,10 @@ collisionBounce s game =
         (ballVX, ballVY) = ballVel game
         speed = (ballVX * s, ballVY * s)
         gameWalls = [ (wallUpPos, gameWidth, wallWidth)
-                , (wallLeftPos, wallWidth, gameHeight)
-                , (wallRightPos, wallWidth, gameHeight)
-                ]
-        gameBricks = brickToRectangle <$> bricks game
-        gamePaddle = paddleToRectangle $ paddle game
-        rectangles =  gameWalls
-        -- rectangles = [gamePaddle]
-        collisions = sortOn fst . catMaybes $ (detectDotsCollision speed dots <$> rectangles)
+                  , (wallLeftPos, wallWidth, gameHeight)
+                  , (wallRightPos, wallWidth, gameHeight)
+                  ]
+        collisions = sortOn fst . catMaybes $ (detectDotsCollision speed dots <$> gameWalls)
 
 
 
