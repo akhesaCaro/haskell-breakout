@@ -1,5 +1,6 @@
 module Maths
-  ( intersecPoint
+  ( intersecTime
+  , intersecPoint
   , dot
   ) where
 
@@ -7,6 +8,12 @@ module Maths
 type Vector = (Float, Float)
 type SquareMatrix = (Vector, Vector)
 type Point = (Float, Float)
+
+-- | calculate the matrix multiplication between a Vector and a SquareMatrix
+matrixMultiplication :: Vector        -- ^ vector
+                     -> SquareMatrix  -- ^ square matrix to multiplicate with
+                     -> Vector        -- ^ result qas a vector
+matrixMultiplication (vx, vy) ((a, b), (c, d)) = ((vx * a + vx * b),(vy * c + vy * d))
 
 -- | Calculate the dot product of two vectors
 dot :: Vector   -- ^ first vector called va
@@ -29,6 +36,18 @@ cramer ((v1x, v1y), (v2x, v2y)) (rx, ry) =
       where
         det = determinant ((v1x, v1y), (v2x, v2y))
 
+-- | Return, if it exists, the intersection time when the 2 segments defined
+--   by a starting point and a direction vector collide.
+intersecTime :: Vector       -- ^ vector v
+              -> Point        -- ^ vector v starting point
+              -> Vector       -- ^ vector ab
+              -> Point        -- ^ vector ab starting point (point a)
+              -> Maybe Float  -- ^ collision point
+intersecTime (vx, vy) (vx0, vy0) (abx, aby) (ax0, ay0) = clamp cram
+      where cram = cramer ((abx, aby), (-vx, -vy)) (vx0 - ax0, vy0 - ay0)
+
+
+
 -- | Return, if it exists, the intersection point between 2 segments defined
 --   by a starting point and a direction vector.
 intersecPoint :: Vector       -- ^ vector v
@@ -36,13 +55,25 @@ intersecPoint :: Vector       -- ^ vector v
               -> Vector       -- ^ vector ab
               -> Point        -- ^ vector ab starting poiny (point a)
               -> Maybe Point  -- ^ collision point
-intersecPoint (vx, vy) (vx0, vy0) (abx, aby) (ax0, ay0) = clamp cram
+intersecPoint (vx, vy) (vx0, vy0) (abx, aby) (ax0, ay0) = clamp2 cram
       where cram = cramer ((abx, aby), (-vx, -vy)) (vx0 - ax0, vy0 - ay0)
 
 -- | return the point if all value are between the range 1 and 0
 clamp :: Point        -- ^ Point to clap
-      -> Maybe Point
+      -> Maybe Float
 clamp (x, y) = let r = (,) <$> inRange x <*> inRange y
+        in case r of
+          Nothing -> Nothing
+          Just (t1, t2) -> Just t1
+      where inRange a | a > 1     = Nothing
+                      | a < 0     = Nothing
+                      | otherwise = Just a
+
+
+                      -- | return the point if all value are between the range 1 and 0
+clamp2 :: Point        -- ^ Point to clap
+      -> Maybe Point
+clamp2 (x, y) = let r = (,) <$> inRange x <*> inRange y
         in case r of
           Nothing -> Nothing
           Just _ -> r

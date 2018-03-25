@@ -6,12 +6,14 @@ module Physics
   , movePaddle
   , computeDot
   , collisionBounce
-  , bricksBounce
+  -- , bricksBounce
   , isGameOver
-  , paddleBounce
+  -- , paddleBounce
   , resetPaddleVel
   ) where
 
+
+import Data.List (sortOn)
 import GameBoard
 import CollisionDetection
 
@@ -26,10 +28,29 @@ speedUp :: Position -> Position
 speedUp (x, y) = (speedRatio * x, speedRatio * y)
 
 
+-- -- | Update the dot position with the velocity
+-- computeDots :: Game  -- ^ current game state
+--             -> Game  -- ^ game updated
+-- computeDots game = game { ballDots = computeDot radius ballV <$> ballDots game }
+--       where
+--         ballL = ballLoc game
+--         ballV = ballVel game
+--         radius = ballRadius
+
+-- computeDot :: Radius
+--            -> Velocity
+--            -> Position
+--            -> Position
+-- computeDot radius (vx, vy) (x, y) = (ax + x , ay + y)
+--       where
+--         ax = (vx * radius) / normV
+--         ay = (vy * radius) / normV
+--         normV = sqrt ( vx * vx + vy * vy )
+
 -- | Update the dot position with the velocity
 computeDot :: Game  -- ^ current game state
            -> Game  -- ^ game updated
-computeDot game = game { ballDot = (ax + x , ay + y) }
+computeDot game = game { ballDots = [(ax + x , ay + y)] }
       where
         (x, y)  = ballLoc game
         (vx, vy) = ballVel game
@@ -58,15 +79,27 @@ moveBall seconds game =
 collisionBounce :: Seconds   -- ^ seconds since last update
                  -> Game     -- ^ current game state
                  -> Game     -- ^ game updated
-collisionBounce s game = game { ballVel = (nsX / s , nsY / s) }
+collisionBounce s game =
+      case collisions of
+          [] -> game
+          ((t, TopSide):xs) -> game { ballVel = (ballVX, -ballVY) }
+          ((t, BottomSide):xs) -> game { ballVel = (ballVX, -ballVY) }
+          ((t, RightSide):xs) -> game { ballVel = (-ballVX, ballVY) }
+          ((t, LeftSide):xs) -> game { ballVel = (-ballVX, ballVY) }
       where
-        ballD = ballDot game
+        dots = ballDots game
         (ballVX, ballVY) = ballVel game
-        (nsX, nsY)  = rectanglesDotCollision ballD (ballVX * s, ballVY * s) rectangles
-        rectangles = [ (wallUpPos, gameWidth, wallWidth)
-                     , (wallLeftPos, wallWidth, gameHeight)
-                     , (wallRightPos, wallWidth, gameHeight)
-                     ]
+        speed = (ballVX * s, ballVY * s)
+        gameWalls = [ (wallUpPos, gameWidth, wallWidth)
+                , (wallLeftPos, wallWidth, gameHeight)
+                , (wallRightPos, wallWidth, gameHeight)
+                ]
+        gameBricks = brickToRectangle <$> bricks game
+        gamePaddle = paddleToRectangle $ paddle game
+        rectangles = [gamePaddle] ++ gameWalls ++ gameBricks
+        collisions = sortOn fst . catMaybes $ (detectDotsCollision speed dots <$> rectangles)
+
+
 
 -- | reset paddle velocity when the mouse stops
 resetPaddleVel :: Game   -- ^ current game state
@@ -75,43 +108,6 @@ resetPaddleVel game = if mouseEvent game
                         then game { mouseEvent = False }
                         else game { paddle = (paddle game) { paddleVel = (0,0)} }
 
-
--- | Detect collision on the paddle and change velocity and score
-paddleBounce :: Seconds -- ^ second since last update
-             -> Game    -- ^ current game state
-             -> Game    -- ^ game updated
-paddleBounce s game = case nws of
-        Nothing -> game
-        Just (nsX, nsY) -> game { ballVel = (nsX / s + (paddleV * 50) , nsY / s)}
-      where
-        paddleV = fst $ paddleVel $ paddle game
-        ballD = ballDot game
-        (ballVX, ballVY) = ballVel game
-        nws = rectangleDotCollision ballD (ballVX * s, ballVY * s)
-                              (paddleLoc $ paddle game, paddleWidth, paddleHeight)
-
--- | Transform a brick to a rectangle
-brickToRectangle :: Brick       -- ^ brick to transform
-                 -> Rectangle   -- ^ brick rentangle
-brickToRectangle b = (brickCenter, brickWidth, brickHeight)
-      where
-      brickCenter = brickLoc b
-
-
--- | Update the ball velocity and bricks if the ball hits a brick
-bricksBounce :: Seconds   -- ^ Number of seconds since last update
-              -> Game     -- ^ current state pf the game
-              -> Game     -- ^ Game updated
-bricksBounce s game = case fst bc of
-      Nothing -> game
-      Just (vx, vy) -> game { bricks    = bricksUpdated
-                            , ballVel   = speedUp (vx / s, vy / s)
-                            , gameScore = addScore score }
-      where
-        bc = bricksCollision (ballLoc game) (vx * s, vy * s) (bricks game)
-        (vx, vy) = ballVel game
-        bricksUpdated = snd bc
-        score = gameScore game
 
 
 -- | Update the paddle position aand stop it if it goes throught the wall

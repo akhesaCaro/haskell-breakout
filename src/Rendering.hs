@@ -17,13 +17,11 @@ renderScore s = translate (-10) ((gameHeight / 2) - 50)
 
 
 -- | render dot that indicate the potential hiting point
-renderDot :: Color    -- ^ dot color
-          -> Position -- ^ dot position
-          -> Radius   -- ^ dot radius
+renderDot :: Position -- ^ dot position
           -> Picture  -- ^ Picture of the dot
-renderDot c (x, y) radius = translate x y
-                          $ color c
-                          $ circleSolid radius
+renderDot (x, y) = translate x y
+                          $ color white
+                          $ circleSolid 2
 
 -- | render state text
 renderStateText :: Color      -- ^ Text color
@@ -104,7 +102,7 @@ renderGame game @ Game { gameState = Playing } = pictures
       , renderWall wallColor wallWidth gameHeight wallRightPos
       , pictures . fmap renderBrick $ bricks game
       , renderPaddle paddleColor paddleWidth paddleHeight (paddleLoc $ paddle game)
-      , renderDot white (ballDot game) 2
+      , pictures . fmap renderDot $ ballDots game
       , renderScore (gameScore game)
       ]
       where

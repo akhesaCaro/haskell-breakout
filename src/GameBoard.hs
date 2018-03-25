@@ -18,6 +18,8 @@ module GameBoard
     , Game (..)
     , Paddle (..)
     , GameState (..)
+    , brickToRectangle
+    , paddleToRectangle
     , initialState
     ) where
 
@@ -100,10 +102,22 @@ data Game = Game
     , mouseEvent :: Bool      -- ^ if the system got a mouse event since last update
     , ballLoc :: Position     -- ^ ball (x, y) location.
     , ballVel :: Velocity     -- ^ ball (x, y) velocity
-    , ballDot :: Position     -- ^ velocity indicator
+    , ballDots :: [Position]  -- ^ dot used for the collision 3 vectors
     , bricks :: [Brick]       -- ^ bricks list
     , paddle :: Paddle        -- ^ paddle
     } deriving Show
+
+
+-- | Transform a brick to a rectangle
+brickToRectangle :: Brick     -- ^ brick to transform
+                 -> Rectangle -- ^ brick transformed to a rectangle
+brickToRectangle b = (brickLoc b, brickWidth, brickHeight)
+
+-- | Transform a paddle to a rectangle
+paddleToRectangle :: Paddle     -- ^ paddle to transform
+                  -> Rectangle  -- ^ paddle transformed to a rectangle
+paddleToRectangle p = (paddleLoc p, paddleWidth, paddleHeight)
+
 
 -- | Create the first level
 levelOne :: Level
@@ -126,7 +140,7 @@ initialState = Game
     , mouseEvent = False
     , ballLoc = (0, -200)
     , ballVel = (50, 150)
-    , ballDot = (0, 0)
+    , ballDots = [(0, 0)]
     , bricks = levelOne
     , paddle = Paddle { paddleLoc = (0,-(gameHeight / 2) + 50)
                       , paddleVel = (0,0)
