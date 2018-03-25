@@ -62,11 +62,10 @@ ballRadius = 10
 
 -- | All the wall positions
 wallUpPos, wallDownPos, wallLeftPos, wallRightPos :: Position
-wallUpPos    = (0, gameHeight / 2)     -- ^ top wall position
-wallDownPos  = (0,-(gameHeight/ 2))    -- ^ botom wall position
-wallLeftPos  = (-(gameWidth / 2) , 0)     -- ^ left wall position
-wallRightPos = (gameWidth / 2, 0)   -- ^ right wall position
-
+wallUpPos    = (0, gameHeight / 2)      -- ^ top wall position
+wallDownPos  = (0,-(gameHeight/ 2))     -- ^ botom wall position
+wallLeftPos  = (-(gameWidth / 2) , 0)   -- ^ left wall position
+wallRightPos = (gameWidth / 2, 0)       -- ^ right wall position
 
 -- | aliases
 type Score = Integer
@@ -107,7 +106,6 @@ data Game = Game
     , paddle :: Paddle        -- ^ paddle
     } deriving Show
 
-
 -- | Transform a brick to a rectangle
 brickToRectangle :: Brick     -- ^ brick to transform
                  -> Rectangle -- ^ brick transformed to a rectangle
@@ -117,7 +115,6 @@ brickToRectangle b = (brickLoc b, brickWidth, brickHeight)
 paddleToRectangle :: Paddle     -- ^ paddle to transform
                   -> Rectangle  -- ^ paddle transformed to a rectangle
 paddleToRectangle p = (paddleLoc p, paddleWidth, paddleHeight)
-
 
 -- | Create the first level
 levelOne :: Level
