@@ -25,8 +25,11 @@ update seconds game @ Game { gameState = Playing }
       = isGameOver
       . resetPaddleVel
       . movePaddle
+      . paddleBounce seconds
+      . bricksBounce seconds
       . moveBall seconds
       . collisionBounce seconds
+      . bricksBounce seconds
       . computeDot $ game
 
 -- Game in a main menu state /  Game over / Game paused
