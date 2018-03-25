@@ -8,7 +8,6 @@ import  Rendering
 -- Conflict with the type Vector in module Maths
 import  Graphics.Gloss hiding (Vector)
 
-
 import  Graphics.Gloss.Data.ViewPort
 
 -- | Window background Color
@@ -19,7 +18,6 @@ background = black
 update :: Float   -- ^ The number of seconds since last update
        -> Game    -- ^ current game state
        -> Game    -- ^ A new game state with an updated ball and paddles positions.
-
 -- Game playing
 update seconds game @ Game { gameState = Playing }
       = isGameOver
@@ -31,7 +29,6 @@ update seconds game @ Game { gameState = Playing }
       . wallsBounce seconds
       . bricksBounce seconds
       . computeDot $ game
-
 -- Game in a main menu state /  Game over / Game paused
 update _ game  = game
 
