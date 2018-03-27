@@ -4,7 +4,7 @@ module Physics
   ( moveBall
   , speedUp
   , movePaddle
-  , computeDot
+  , computeDots
   , wallsBounce
   , bricksBounce
   , isGameOver
@@ -17,6 +17,8 @@ import GameBoard
 import CollisionDetection
 import Data.Maybe
 
+import Maths
+
 -- aliases
 type Seconds = Float
 
@@ -24,14 +26,24 @@ type Seconds = Float
 speedUp :: Position -> Position
 speedUp (x, y) = (speedRatio * x, speedRatio * y)
 
--- | Update the dot position with the velocity
-computeDot :: Game  -- ^ current game state
-           -> Game  -- ^ game updated
-computeDot game = game { ballDots = [(ax + x , ay + y)] }
+-- | update the 3 dots position
+computeDots :: Game -- ^ current state game
+            -> Game -- ^ game updated
+computeDots game = game { ballDots = [dot1] ++ [dot2] ++  [dot3]}
       where
-        (x, y)  = ballLoc game
-        (vx, vy) = ballVel game
-        radius = ballRadius
+        dot1 = computeDot (ballLoc game) (ballVel game) ballRadius
+        dot2 = computeDot (ballLoc game) nv ballRadius
+          where nv = matrixMultiplication ((0, 1),(-1, 0)) (ballVel game)
+        dot3 = computeDot (ballLoc game) nv ballRadius
+          where nv = matrixMultiplication ((0, -1),(1, 0)) (ballVel game)
+
+-- | Update the dot position with the velocity
+computeDot :: Position  -- ^ ball center
+           -> Velocity  -- ^ vector
+           -> Radius    -- ^ ball radius
+           -> Position  -- ^ dot position
+computeDot (x, y) (vx, vy) radius = (ax + x , ay + y)
+      where
         ax = (vx * radius) / normV
         ay = (vy * radius) / normV
         normV = sqrt ( vx * vx + vy * vy )

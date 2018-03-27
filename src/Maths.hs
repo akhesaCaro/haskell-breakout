@@ -1,6 +1,7 @@
 module Maths
   ( intersecTime
   , dot
+  , matrixMultiplication
   ) where
 
 -- aliases
@@ -9,10 +10,10 @@ type SquareMatrix = (Vector, Vector)
 type Point = (Float, Float)
 
 -- | calculate the matrix multiplication between a Vector and a SquareMatrix
-matrixMultiplication :: Vector        -- ^ vector
-                     -> SquareMatrix  -- ^ square matrix to multiplicate with
+matrixMultiplication :: SquareMatrix  -- ^ square matrix to multiplicate with
+                     -> Vector        -- ^ vector
                      -> Vector        -- ^ result qas a vector
-matrixMultiplication (vx, vy) ((a, b), (c, d)) = ((vx * a + vx * b),(vy * c + vy * d))
+matrixMultiplication ((a, c), (b, d)) (vx, vy)  = ((vx * a + vy * b),(vx * c + vy * d))
 
 -- | Calculate the dot product of two vectors
 dot :: Vector   -- ^ first vector called va
