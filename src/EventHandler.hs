@@ -42,5 +42,8 @@ handleKeys (EventKey (Char 'p') Up _ _) game@ Game { gameState = Paused } =
 handleKeys (EventKey (SpecialKey KeyEnter) Down _ _) game@ Game { gameState = MainMenu } =
       game { gameState = Playing }
 
+-- Press any key to reset the game
+handleKeys (EventKey _ Down _ _) game@ Game { gameState = GameOver } = initialState
+
 -- Do nothing for all other events.
 handleKeys _ game = game

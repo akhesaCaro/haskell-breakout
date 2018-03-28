@@ -29,7 +29,8 @@ update seconds game @ Game { gameState = Playing }
       . wallsBounce seconds
       . bricksBounce seconds
       . computeDots $ game
--- Game in a main menu state /  Game over / Game paused
+
+-- Game in a main menu state / Game paused
 update _ game  = game
 
 -- | Window
