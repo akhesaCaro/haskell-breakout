@@ -6,7 +6,7 @@ module GameBoard
     , brickWidth, brickHeight
     , ballRadius, speedRatio
     , wallUpPos, wallDownPos, wallLeftPos, wallRightPos
-    , paddleWidth, paddleHeight, paddleStep
+    , paddleWidth, paddleHeight
     , Position
     , Score
     , Radius
@@ -23,6 +23,7 @@ module GameBoard
 
 -- I want to use my own Vector.
 import Graphics.Gloss  hiding (Vector)
+import Data.Bool
 
 -- | position of the window on the screen
 offset:: Int
@@ -42,9 +43,8 @@ brickWidth = 100
 paddleWidth = 100
 
 -- | speed ration (when the ball hits a brick)
-speedRatio, paddleStep :: Float
-speedRatio = 1.25
-paddleStep = 5
+speedRatio :: Float
+speedRatio = 1.025
 brickStepX = brickWidth + 10
 brickStepY = brickHeight + 10
 
@@ -97,6 +97,7 @@ data Paddle = Paddle
 data Game = Game
     { gameState :: GameState  -- ^ game state
     , gameScore :: Score      -- ^ game score
+    , mouseEvent :: Bool      -- ^ if the system got a mouse event since last update
     , ballLoc :: Position     -- ^ ball (x, y) location.
     , ballVel :: Velocity     -- ^ ball (x, y) velocity
     , ballDot :: Position     -- ^ velocity indicator
@@ -122,6 +123,7 @@ initialState :: Game
 initialState = Game
     { gameState = MainMenu
     , gameScore = 0
+    , mouseEvent = False
     , ballLoc = (0, -200)
     , ballVel = (50, 150)
     , ballDot = (0, 0)

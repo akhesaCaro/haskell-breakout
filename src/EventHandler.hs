@@ -10,6 +10,7 @@ import Physics
 import Graphics.Gloss.Interface.Pure.Game
 import System.Exit
 
+
 -- | Pure responding to key events.
 handleKeys :: Event     -- ^ keyEvent
            -> Game      -- ^ current game state
@@ -23,6 +24,14 @@ handleKeys (EventKey (SpecialKey KeyRight) Down _ _) game =
       game { paddle = (paddle game) { paddleVel = (1 , 0) }}
 handleKeys (EventKey (SpecialKey KeyRight) Up _ _) game =
       game { paddle = (paddle game) { paddleVel = (0 , 0) }}
+
+-- Moving mouse event , move verticaly the paddle
+handleKeys (EventMotion (x, _)) game
+        = game { paddle = (paddle game) { paddleVel = (x - px , 0)}
+                                        , mouseEvent = True }
+          where
+            (px, py) = paddleLoc (paddle game)
+
 
 -- For an 'p' keypress, pause the game.
 handleKeys (EventKey (Char 'p') Up _ _) game@ Game { gameState = Playing } =

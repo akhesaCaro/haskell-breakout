@@ -23,8 +23,9 @@ update :: Float   -- ^ The number of seconds since last update
 -- Game playing
 update seconds game @ Game { gameState = Playing }
       = isGameOver
-      . movePaddle
+      . resetPaddleVel
       . paddleBounce seconds
+      . movePaddle
       . bricksBounce seconds
       . moveBall seconds
       . collisionBounce seconds
@@ -32,7 +33,6 @@ update seconds game @ Game { gameState = Playing }
 
 -- Game in a main menu state /  Game over / Game paused
 update _ game  = game
-
 
 -- | Window
 window :: Display

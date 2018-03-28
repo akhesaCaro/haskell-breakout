@@ -9,14 +9,13 @@ module Physics
   , bricksBounce
   , isGameOver
   , paddleBounce
+  , resetPaddleVel
   ) where
 
 import GameBoard
 import CollisionDetection
 
 import Data.Maybe
-
-
 
 -- aliases
 type Seconds = Float
@@ -68,6 +67,14 @@ collisionBounce s game = game { ballVel = (nsX / s , nsY / s) }
                      , (wallLeftPos, wallWidth, gameHeight)
                      , (wallRightPos, wallWidth, gameHeight)
                      ]
+
+-- | reset paddle velocity when the mouse stops
+resetPaddleVel :: Game   -- ^ current game state
+               -> Game   -- ^ game updated
+resetPaddleVel game = if mouseEvent game
+                        then game { mouseEvent = False }
+                        else game { paddle = (paddle game) { paddleVel = (0,0)} }
+
 
 -- | Detect collision on the paddle and change velocity and score
 paddleBounce :: Seconds -- ^ second since last update
@@ -140,6 +147,7 @@ movePaddle game
         halfPaddle = paddleWidth / 2
         leftGameBorder = -(gameWidth / 2) + wallWidth / 2
         rightGameBorder = gameWidth / 2 - wallWidth / 2
+        paddleStep = 1
 
 
 -- | Verify if the game is over (ball outside the game)
