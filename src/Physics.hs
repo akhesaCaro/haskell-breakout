@@ -29,7 +29,7 @@ speedUp (x, y) = (speedRatio * x, speedRatio * y)
 -- | update the 3 dots position
 computeDots :: Game -- ^ current state game
             -> Game -- ^ game updated
-computeDots game = game { ballDots = [dot1] ++ [dot2] ++  [dot3]}
+computeDots game = game { ballDots = [dot1, dot2, dot3]}
       where
         dot1 = computeDot (ballLoc game) (ballVel game) ballRadius
         dot2 = computeDot (ballLoc game) nv ballRadius
@@ -58,7 +58,7 @@ moveBall seconds game =
         -- Old locations and velocities
         (x, y) = ballLoc game
         (vx, vy) = ballVel game
-        --New locations
+        -- New locations
         x' = x + vx * seconds
         y' = y + vy * seconds
 
@@ -142,9 +142,9 @@ wallsBounce s game =
         (ballVX, ballVY) = ballVel game
         speed = (ballVX * s, ballVY * s)
         gameWalls = [ (wallUpPos, gameWidth, wallWidth)
-                  , (wallLeftPos, wallWidth, gameHeight)
-                  , (wallRightPos, wallWidth, gameHeight)
-                  ]
+                    , (wallLeftPos, wallWidth, gameHeight)
+                    , (wallRightPos, wallWidth, gameHeight)
+                    ]
         collisions = sortOn fst . catMaybes $ (detectDotsCollision speed dots <$> gameWalls)
 
 -- | reset paddle velocity when the mouse stops

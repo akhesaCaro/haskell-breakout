@@ -25,7 +25,6 @@ module GameBoard
 
 -- I want to use my own Vector.
 import Graphics.Gloss  hiding (Vector)
-import Data.Bool
 
 -- | position of the window on the screen
 offset:: Int
