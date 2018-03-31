@@ -1,5 +1,5 @@
 module Rendering
-  (renderGame
+  (renderGameIO
   ) where
 
 import GameBoard
@@ -72,6 +72,14 @@ renderPaddle :: Color -- ^ the paddle color
 renderPaddle c w h (x, y) = translate x y
                           $ color c
                           $ rectangleSolid w h
+
+
+
+-- | render a IO game
+renderGameIO :: Game        -- ^ game to render
+             -> IO Picture  -- ^ rendered game in IO
+renderGameIO game = return $ renderGame game
+
 
 -- | render the game
 renderGame :: Game      -- ^ The game state to render

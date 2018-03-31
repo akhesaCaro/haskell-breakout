@@ -9,10 +9,17 @@ import  Rendering
 import  Graphics.Gloss hiding (Vector)
 
 import  Graphics.Gloss.Data.ViewPort
+import  Graphics.Gloss.Interface.IO.Game
 
 -- | Window background Color
 background :: Color
 background = black
+
+-- | update de the game in IO
+updateIO :: Float
+         -> Game
+         -> IO Game
+updateIO seconds game = return $ update seconds game
 
 -- | Update the game by moving the ball and bouncing off walls.
 update :: Float   -- ^ The number of seconds since last update
@@ -43,4 +50,4 @@ fps = 60
 
 -- | Main
 main :: IO ()
-main = play window background fps initialState renderGame handleKeys update
+main = playIO window background fps initialState renderGameIO handleKeysIO updateIO
