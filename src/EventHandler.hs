@@ -27,7 +27,8 @@ handleKeys (EventKey (SpecialKey KeyRight) Up _ _) game =
 -- Moving mouse event , move verticaly the paddle
 handleKeys (EventMotion (x, _)) game
         = game { paddle = (paddle game) { paddleVel = (x - px , 0)}
-                                        , mouseEvent = True }
+               , mouseEvent = True
+               }
           where
             (px, py) = paddleLoc (paddle game)
 
@@ -40,6 +41,9 @@ handleKeys (EventKey (Char 'p') Up _ _) game@ Game { gameState = Paused } =
 -- For an 'enter' keypress, start the game.
 handleKeys (EventKey (SpecialKey KeyEnter) Down _ _) game@ Game { gameState = MainMenu } =
       game { gameState = Playing }
+
+-- Press any key to reset the game
+handleKeys (EventKey _ Down _ _) game@ Game { gameState = GameOver } = initialState
 
 -- Do nothing for all other events.
 handleKeys _ game = game
