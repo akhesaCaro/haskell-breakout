@@ -1,13 +1,17 @@
 module Rendering
   (renderGameIO
+  , Library (..)
   ) where
 
 import GameBoard
 
-
-
 -- I want to use my own Vector.
 import Graphics.Gloss hiding (Vector)
+
+-- | Images library
+data Library = Library
+      { brickImg :: Picture
+      }
 
 -- | Render score
 renderScore :: Score    -- ^ score to render
@@ -76,7 +80,6 @@ renderPaddle :: Color -- ^ the paddle color
 renderPaddle c w h (x, y) = translate x y
                           $ color c
                           $ rectangleSolid w h
-
 
 
 -- | render a IO game

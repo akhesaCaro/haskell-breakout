@@ -2,6 +2,7 @@
 
 module Main where
 
+import  Lib
 import  EventHandler
 import  GameBoard
 import  Physics
@@ -13,15 +14,26 @@ import  Graphics.Gloss hiding (Vector)
 import  Graphics.Gloss.Data.ViewPort
 import  Graphics.Gloss.Interface.IO.Game
 
+
 -- | Window background Color
 background :: Color
 background = greyN 0.5
+
+
+-- | update world
+updateWorldIO :: Float
+              -> World
+              -> IO World
+updateWorldIO s w@(g, l) = do
+      game <- updateIO s (fst w)
+      return (game, l)
 
 -- | update de the game in IO
 updateIO :: Float
          -> Game
          -> IO Game
 updateIO seconds game = return $ update seconds game
+
 
 -- | Update the game by moving the ball and bouncing off walls.
 update :: Float   -- ^ The number of seconds since last update
@@ -51,7 +63,17 @@ fps :: Int
 fps = 60
 
 -- | Main
+playIO' :: Display
+       -> Color
+       -> Int
+       -> World
+       -> (World -> IO Picture)
+       -> (Event -> World -> IO World)
+       -> (Float -> World -> IO World)
+       -> IO ()
+playIO' = playIO
+
 main :: IO ()
 main = do
   (pictureImage :: Picture) <- loadBMP "/media/akhesa/16e1988c-fe98-4a2e-b528-320abdc3d132/akhesa/projects/haskell-breakout/blue-rectangle-hi.bmp"
-  playIO window background fps (initialState pictureImage) renderGameIO handleKeysIO updateIO
+  playIO' window background fps (initialState pictureImage, Library {brickImg = pictureImage}) renderWorldIO handleKeysWorldIO updateWorldIO

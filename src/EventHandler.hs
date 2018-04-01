@@ -2,6 +2,7 @@
 
 module EventHandler
   ( handleKeysIO
+  , Event(..)
   ) where
 
 import GameBoard
