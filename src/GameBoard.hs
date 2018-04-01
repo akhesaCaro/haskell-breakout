@@ -103,6 +103,7 @@ data Game = Game
     , ballDots :: [Position]  -- ^ dot used for the collision 3 vectors
     , bricks :: [Brick]       -- ^ bricks list
     , paddle :: Paddle        -- ^ paddle
+    , brickPicture :: Picture -- ^ brick image
     } deriving Show
 
 -- | Transform a brick to a rectangle
@@ -129,8 +130,9 @@ addScore :: Score  -- ^ current score
 addScore = (+10)
 
 -- | initial game state
-initialState :: Game
-initialState = Game
+initialState :: Picture
+             -> Game
+initialState bp = Game
     { gameState = MainMenu
     , gameScore = 0
     , mouseEvent = False
@@ -141,4 +143,5 @@ initialState = Game
     , paddle = Paddle { paddleLoc = (0,-(gameHeight / 2) + 50)
                       , paddleVel = (0,0)
                       }
+    , brickPicture = bp
     }

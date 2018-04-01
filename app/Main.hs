@@ -1,3 +1,5 @@
+{-# LANGUAGE ScopedTypeVariables #-}
+
 module Main where
 
 import  EventHandler
@@ -13,7 +15,7 @@ import  Graphics.Gloss.Interface.IO.Game
 
 -- | Window background Color
 background :: Color
-background = black
+background = greyN 0.5
 
 -- | update de the game in IO
 updateIO :: Float
@@ -50,4 +52,6 @@ fps = 60
 
 -- | Main
 main :: IO ()
-main = playIO window background fps initialState renderGameIO handleKeysIO updateIO
+main = do
+  (pictureImage :: Picture) <- loadBMP "/media/akhesa/16e1988c-fe98-4a2e-b528-320abdc3d132/akhesa/projects/haskell-breakout/blue-rectangle-hi.bmp"
+  playIO window background fps (initialState pictureImage) renderGameIO handleKeysIO updateIO

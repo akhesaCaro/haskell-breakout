@@ -49,7 +49,7 @@ handleKeys (EventKey (SpecialKey KeyEnter) Down _ _) game@ Game { gameState = Ma
       game { gameState = Playing }
 
 -- Press any key to reset the game
-handleKeys (EventKey _ Down _ _) game@ Game { gameState = GameOver } = initialState
+handleKeys (EventKey _ Down _ _) game@ Game { gameState = GameOver } = initialState (brickPicture game)
 
 -- Do nothing for all other events.
 handleKeys _ game = game

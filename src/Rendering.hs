@@ -4,6 +4,8 @@ module Rendering
 
 import GameBoard
 
+
+
 -- I want to use my own Vector.
 import Graphics.Gloss hiding (Vector)
 
@@ -55,13 +57,15 @@ renderBall col radius (x, y) = translate x y
                              $ circleSolid radius
 
 -- | render brick
-renderBrick :: Brick    -- ^ the brick to render
-        -> Picture      -- ^ brick picture
-renderBrick b = translate x y
-              $ color (brickCol b)
-              $ rectangleSolid brickWidth brickHeight
+renderBrick :: Picture  -- ^ brick image
+            -> Brick    -- ^ the brick to render
+            -> Picture      -- ^ brick picture
+renderBrick p b = translate x y
+                $ scale 0.17 0.1 p
       where
         (x, y) = brickLoc b
+
+
 
 -- render paddle
 renderPaddle :: Color -- ^ the paddle color
@@ -79,6 +83,8 @@ renderPaddle c w h (x, y) = translate x y
 renderGameIO :: Game        -- ^ game to render
              -> IO Picture  -- ^ rendered game in IO
 renderGameIO game = return $ renderGame game
+
+  --loadBMP "/media/akhesa/16e1988c-fe98-4a2e-b528-320abdc3d132/akhesa/projects/haskell-breakout/blue-rectangle-hi.bmp"
 
 
 -- | render the game
@@ -110,8 +116,8 @@ renderGame game @ Game { gameState = Playing } = pictures
       , renderWall wallColor gameWidth wallWidth wallUpPos
       , renderWall wallColor wallWidth gameHeight wallLeftPos
       , renderWall wallColor wallWidth gameHeight wallRightPos
-      , pictures . fmap renderBrick $ bricks game
       , renderPaddle paddleColor paddleWidth paddleHeight (paddleLoc $ paddle game)
+      , pictures . fmap (renderBrick $ brickPicture game) $ bricks game
       , pictures . fmap (renderDot white 2) $ ballDots game
       , renderScore (gameScore game)
       ]
