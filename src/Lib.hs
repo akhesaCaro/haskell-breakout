@@ -21,7 +21,7 @@ renderWorldIO :: World
 renderWorldIO w = renderGameIO (fst w)
 
 
--- | IO responding to key events
+-- | IO responding to key events for the world
 handleKeysWorldIO :: Event
                   -> World
                   -> IO World

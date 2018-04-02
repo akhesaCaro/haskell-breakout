@@ -69,7 +69,6 @@ renderBrick p b = translate x y p
         (x, y) = brickLoc b
 
 
-
 -- render paddle
 renderPaddle :: Color -- ^ the paddle color
         -> Width      -- ^ paddle width
@@ -85,8 +84,6 @@ renderPaddle c w h (x, y) = translate x y
 renderGameIO :: Game        -- ^ game to render
              -> IO Picture  -- ^ rendered game in IO
 renderGameIO game = return $ renderGame game
-
-  --loadBMP "/media/akhesa/16e1988c-fe98-4a2e-b528-320abdc3d132/akhesa/projects/haskell-breakout/blue-rectangle-hi.bmp"
 
 
 -- | render the game
