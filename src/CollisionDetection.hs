@@ -4,6 +4,7 @@ module CollisionDetection
   , collisionToSpeed
   , bricksCollision
   , CollisionSide (..)
+  , itemCollision
   ) where
 
 import Data.List (sortOn)
@@ -18,6 +19,19 @@ data CollisionSide =
 
 -- Aliases
 type Speed = (Float, Float)
+
+-- | Calculate if there a hit between an item and the paddle
+itemCollision :: Paddle      -- ^ Paddle
+               -> Item      -- ^ item
+               -> Maybe Item      -- ^ item updated
+itemCollision p i = case collision of
+                  Nothing -> Just i
+                  _       -> Nothing
+
+      where
+      collision = detectDotCollision (itemX, itemY - itemHeight / 2) itemV (paddleToRectangle p)
+      itemV = itemVel
+      (itemX, itemY) = itemPos i
 
 -- | Calculate if there a hit between the ball and one of the brick
 --   the system the list of bricks updated and the new speed of the ball
@@ -37,7 +51,7 @@ bricksCollision ballSpeed dots bricks = go ballSpeed dots bricks (Nothing, [], [
               Just (t, collisionSide) -> (Just $ collisionToSpeed
                                                 (t, collisionSide)
                                                 ballSpeed
-                                                , brickLts ++ bs 
+                                                , brickLts ++ bs
                                                 , Item{itemType = brickItem brick, itemPos = brickLoc brick} : itemLts)
               where
               collision

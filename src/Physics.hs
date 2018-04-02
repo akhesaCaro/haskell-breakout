@@ -101,10 +101,13 @@ movePaddle game
 -- | Update the items positions
 moveItems :: Game  -- ^ game to update
           -> Game  -- ^ game updated
-moveItems game = game {items = catMaybes . fmap (moveItem itemVel) $ itemLts
+moveItems game = game {items = itemsUpdated
                       }
       where itemLts = items game
-
+            itemsUpdated = catMaybes
+                         . fmap (itemCollision (paddle game))
+                         . catMaybes
+                         . fmap (moveItem itemVel) $ itemLts
 
 -- | update item position
 moveItem :: Velocity  -- ^ item velocity
