@@ -14,10 +14,12 @@ module GameBoard
     , Width
     , Height
     , Rectangle
+    , ItemType
     , Brick(..)
     , Game (..)
     , Paddle (..)
     , GameState (..)
+    , Item (..)
     , brickToRectangle
     , paddleToRectangle
     , initialState

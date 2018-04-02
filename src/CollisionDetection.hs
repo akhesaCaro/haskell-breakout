@@ -24,21 +24,21 @@ type Speed = (Float, Float)
 bricksCollision :: Speed      -- ^ object speed (velocity * seconds since last update)
                 -> [Position] -- ^ dot position
                 -> [Brick]    -- ^ list of bricks
-                -> (Maybe Speed, [Brick]) -- ^ new speed with brick updated
-bricksCollision ballSpeed dots bricks = go ballSpeed dots bricks (Nothing, [])
+                -> (Maybe Speed, [Brick], [Item]) -- ^ new speed with brick updated
+bricksCollision ballSpeed dots bricks = go ballSpeed dots bricks (Nothing, [], [])
       where go :: Speed
                -> [Position]
                -> [Brick]
-               -> (Maybe Speed, [Brick])
-               -> (Maybe Speed, [Brick])
+               -> (Maybe Speed, [Brick], [Item])
+               -> (Maybe Speed, [Brick], [Item])
             go _ _ [] resp = resp
-            go ballSpeed dots (brick:bs) (speed, brickLts) = case collision of
-              Nothing -> go ballSpeed dots bs (speed, brick:brickLts)
+            go ballSpeed dots (brick:bs) (speed, brickLts, itemLts) = case collision of
+              Nothing -> go ballSpeed dots bs (speed, brick:brickLts, itemLts)
               Just (t, collisionSide) -> (Just $ collisionToSpeed
                                                 (t, collisionSide)
                                                 ballSpeed
-                                                ,
-                                                brickLts ++ bs)
+                                                , brickLts ++ bs 
+                                                , Item{itemType = brickItem brick, itemPos = brickLoc brick} : itemLts)
               where
               collision
                     = detectDotsCollision ballSpeed dots (brickToRectangle brick)

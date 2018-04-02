@@ -103,16 +103,15 @@ movePaddle game
 bricksBounce :: Seconds   -- ^ Number of seconds since last update
               -> Game     -- ^ current state pf the game
               -> Game     -- ^ Game updated
-bricksBounce s game = case fst bc of
+bricksBounce s game = case bc of
       Nothing -> game
       Just (vx, vy) -> game { bricks    = bricksUpdated
                             , ballVel   = speedUp (vx / s, vy / s)
                             , gameScore = addScore score
                             }
       where
-        bc = bricksCollision (vx * s, vy * s) (ballDots game) (bricks game)
+        (bc, bricksUpdated, _) = bricksCollision (vx * s, vy * s) (ballDots game) (bricks game)
         (vx, vy) = ballVel game
-        bricksUpdated = snd bc
         score = gameScore game
 
 -- | Detect collision on the paddle and change velocity and score
