@@ -99,6 +99,12 @@ data Paddle = Paddle
     , paddleWidth :: Width      -- ^ paddle width
     } deriving Show
 
+-- | Item
+data Item = Item
+    { itemType :: ItemType  -- ^ Item type
+    , itemPos  :: Position  -- ^ Item position
+    } deriving Show
+
 -- | Game
 data Game = Game
     { gameState :: GameState  -- ^ game state
@@ -109,6 +115,7 @@ data Game = Game
     , ballDots :: [Position]  -- ^ dot used for the collision 3 vectors
     , bricks :: [Brick]       -- ^ bricks list
     , paddle :: Paddle        -- ^ paddle
+    , items :: [Item]         -- ^ items falling
     } deriving Show
 
 -- | Transform a brick to a rectangle
@@ -123,7 +130,7 @@ paddleToRectangle p = (paddleLoc p, paddleWidth p, paddleHeight)
 
 -- | Create the first level
 levelOne :: Level
-levelOne = map (Brick col item) brickPos 
+levelOne = map (Brick col item) brickPos
       where
         grid = (,) <$> [-3..3] <*> [1..6]
         brickPos = map (\(x, y) -> (x*brickStepX, y*brickStepY)) grid
@@ -149,4 +156,5 @@ initialState = Game
                       , paddleVel = (0,0)
                       , paddleWidth = 100
                       }
+    , items = []
     }
