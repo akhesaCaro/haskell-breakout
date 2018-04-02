@@ -64,8 +64,7 @@ renderBall col radius (x, y) = translate x y
 renderBrick :: Picture  -- ^ brick image
             -> Brick    -- ^ the brick to render
             -> Picture      -- ^ brick picture
-renderBrick p b = translate x y
-                $ scale 0.17 0.1 p
+renderBrick p b = translate x y p
       where
         (x, y) = brickLoc b
 
