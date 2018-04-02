@@ -76,8 +76,8 @@ type Height = Float
 type Rectangle = (Position, Width, Height)
 
 
--- |  brick items (bonus or malus)
-data Item = PaddleExpander | PaddleMinifier
+-- |  brick item type (bonus or malus)
+data ItemType = PaddleExpander | PaddleMinifier
   deriving Show
 
 -- | The game state
@@ -87,8 +87,9 @@ data GameState =
 
 -- | Brick
 data Brick = Brick
-    { brickLoc  :: Position  -- ^ brick (x, y) location
-    , brickCol  :: Color     -- ^ brick color
+    { brickCol  :: Color     -- ^ brick color
+    , brickItem :: ItemType  -- ^ item type hidden in the brick
+    , brickLoc  :: Position  -- ^ brick (x, y) location
     } deriving Show
 
 -- | Paddle
@@ -122,11 +123,12 @@ paddleToRectangle p = (paddleLoc p, paddleWidth p, paddleHeight)
 
 -- | Create the first level
 levelOne :: Level
-levelOne = map (flip Brick col) brickPos
+levelOne = map (Brick col item) brickPos 
       where
         grid = (,) <$> [-3..3] <*> [1..6]
         brickPos = map (\(x, y) -> (x*brickStepX, y*brickStepY)) grid
         col = yellow
+        item = PaddleExpander
 
 -- | Add brick points to score.
 addScore :: Score  -- ^ current score

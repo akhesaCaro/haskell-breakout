@@ -92,7 +92,7 @@ movePaddle game
       where
         (x, y) = paddleLoc $ paddle game
         vel = fst $ paddleVel $ paddle game
-        halfPaddle = (paddleWidth $ paddle game) / 2
+        halfPaddle = paddleWidth (paddle game) / 2
         leftGameBorder = -(gameWidth / 2) + wallWidth / 2
         rightGameBorder = gameWidth / 2 - wallWidth / 2
         paddleStep = 1
