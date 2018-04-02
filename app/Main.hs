@@ -76,4 +76,4 @@ playIO' = playIO
 main :: IO ()
 main = do
   (pictureImage :: Picture) <- loadBMP "/media/akhesa/16e1988c-fe98-4a2e-b528-320abdc3d132/akhesa/projects/haskell-breakout/library/purpleBrick.bmp"
-  playIO' window background fps (initialState pictureImage, Library {brickImg = pictureImage}) renderWorldIO handleKeysWorldIO updateWorldIO
+  playIO' window background fps (initialState, Library {brickImg = pictureImage}) renderWorldIO handleKeysWorldIO updateWorldIO

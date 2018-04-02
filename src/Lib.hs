@@ -18,7 +18,7 @@ type World = (Game, Library)
 -- | render IO World
 renderWorldIO :: World
               -> IO Picture
-renderWorldIO w = renderGameIO (fst w)
+renderWorldIO (game, lib) = return $ renderGame game lib
 
 
 -- | IO responding to key events for the world

@@ -1,5 +1,5 @@
 module Rendering
-  (renderGameIO
+  (renderGame
   , Library (..)
   ) where
 
@@ -79,26 +79,20 @@ renderPaddle c w h (x, y) = translate x y
                           $ color c
                           $ rectangleSolid w h
 
-
--- | render a IO game
-renderGameIO :: Game        -- ^ game to render
-             -> IO Picture  -- ^ rendered game in IO
-renderGameIO game = return $ renderGame game
-
-
 -- | render the game
 renderGame :: Game      -- ^ The game state to render
+           -> Library   -- ^ image library
            -> Picture   -- ^ A picture of this game state
 
 -- MainMenu state
-renderGame game @ Game { gameState = MainMenu } = pictures
+renderGame game @ Game { gameState = MainMenu } _ = pictures
       [ renderStateText orange "Haskell" (-120, 100) (0.5, 0.5)
       , renderStateText orange "Breakout" (-150, 0) (0.5, 0.5)
       , renderStateText orange "Press ENTER to continue" (-200, -100) (0.25, 0.25)
       ]
 
 -- GameOver state
-renderGame game @ Game { gameState = GameOver } = pictures
+renderGame game @ Game { gameState = GameOver } _ = pictures
       [ renderStateText orange "Game Over" (-170, 0) (0.5, 0.5)
       , renderStateText orange "Score : " (-60 , -80) (0.25, 0.25)
       , renderStateText orange (show $ gameScore game)  (70, -80) (0.25, 0.25)
@@ -106,17 +100,17 @@ renderGame game @ Game { gameState = GameOver } = pictures
       ]
 
 -- Paused state
-renderGame game @ Game { gameState = Paused } =
+renderGame game @ Game { gameState = Paused } _ =
       renderStateText orange "PAUSED" (-120, 0) (0.5, 0.5)
 
 -- Playing state
-renderGame game @ Game { gameState = Playing } = pictures
+renderGame game @ Game { gameState = Playing } library = pictures
       [ renderBall (dark red) 10 (ballLoc game)
       , renderWall wallColor gameWidth wallWidth wallUpPos
       , renderWall wallColor wallWidth gameHeight wallLeftPos
       , renderWall wallColor wallWidth gameHeight wallRightPos
       , renderPaddle paddleColor paddleWidth paddleHeight (paddleLoc $ paddle game)
-      , pictures . fmap (renderBrick $ brickPicture game) $ bricks game
+      , pictures . fmap (renderBrick $ brickImg library) $ bricks game
       , pictures . fmap (renderDot white 2) $ ballDots game
       , renderScore (gameScore game)
       ]
