@@ -101,17 +101,19 @@ movePaddle game
 -- | Update the items positions
 moveItems :: Game  -- ^ game to update
           -> Game  -- ^ game updated
-moveItems game = game {items = fmap (moveItem itemVel) itemLts}
+moveItems game = game {items = catMaybes . fmap (moveItem itemVel) $ itemLts
+                      }
       where itemLts = items game
 
 
 -- | update item position
 moveItem :: Velocity  -- ^ item velocity
          -> Item      -- ^ item to move
-         -> Item      -- ^ item with a new position
-moveItem (velx, vely) i = i { itemPos = (x + velx, y + vely)}
+         -> Maybe Item      -- ^ item with a new position
+moveItem (velx, vely) i
+      | y < -(gameHeight / 2) = Nothing
+      | otherwise = Just i { itemPos = (x + velx, y + vely)}
       where (x, y) = itemPos i
-
 
 
 --  | Update the ball velocity and bricks if the ball hits a brick
