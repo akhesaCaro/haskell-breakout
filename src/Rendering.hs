@@ -109,7 +109,7 @@ renderGame game @ Game { gameState = Playing } library = pictures
       , renderWall wallColor gameWidth wallWidth wallUpPos
       , renderWall wallColor wallWidth gameHeight wallLeftPos
       , renderWall wallColor wallWidth gameHeight wallRightPos
-      , renderPaddle paddleColor paddleWidth paddleHeight (paddleLoc $ paddle game)
+      , renderPaddle paddleColor paddleW paddleHeight (paddleLoc $ paddle game)
       , pictures . fmap (renderBrick $ brickImg library) $ bricks game
       , pictures . fmap (renderDot white 2) $ ballDots game
       , renderScore (gameScore game)
@@ -118,3 +118,4 @@ renderGame game @ Game { gameState = Playing } library = pictures
         wallColor = blue
         brickColor = yellow
         paddleColor = cyan
+        paddleW = paddleWidth $ paddle game 

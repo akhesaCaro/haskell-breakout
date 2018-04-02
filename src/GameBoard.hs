@@ -6,7 +6,7 @@ module GameBoard
     , brickWidth, brickHeight
     , ballRadius, speedRatio
     , wallUpPos, wallDownPos, wallLeftPos, wallRightPos
-    , paddleWidth, paddleHeight
+    , paddleHeight
     , Position
     , Score
     , Radius
@@ -37,11 +37,10 @@ winHeight = floor (gameHeight + wallWidth * 2)
 
 -- | all the widths : brick, game, paddle
 -- wallWidth = thickness
-gameWidth, wallWidth, brickWidth, paddleWidth :: Width
+gameWidth, wallWidth, brickWidth :: Width
 gameWidth = 800
 wallWidth = 10
 brickWidth = 100
-paddleWidth = 100
 
 -- | speed ration (when the ball hits a brick)
 speedRatio :: Float
@@ -76,6 +75,11 @@ type Width = Float
 type Height = Float
 type Rectangle = (Position, Width, Height)
 
+
+-- |  brick items (bonus or malus)
+data Item = PaddleExpander | PaddleMinifier
+  deriving Show
+
 -- | The game state
 data GameState =
   MainMenu | Playing | Paused | GameOver
@@ -83,14 +87,15 @@ data GameState =
 
 -- | Brick
 data Brick = Brick
-    { brickLoc :: Position  -- ^ brick (x, y) location
-    , brickCol :: Color     -- ^ brick color
+    { brickLoc  :: Position  -- ^ brick (x, y) location
+    , brickCol  :: Color     -- ^ brick color
     } deriving Show
 
 -- | Paddle
 data Paddle = Paddle
-    { paddleLoc :: Position   -- ^ paddle (x, y) location
-    , paddleVel :: Velocity   -- ^ paddle velocity
+    { paddleLoc   :: Position   -- ^ paddle (x, y) location
+    , paddleVel   :: Velocity   -- ^ paddle velocity
+    , paddleWidth :: Width      -- ^ paddle width
     } deriving Show
 
 -- | Game
@@ -113,7 +118,7 @@ brickToRectangle b = (brickLoc b, brickWidth, brickHeight)
 -- | Transform a paddle to a rectangle
 paddleToRectangle :: Paddle     -- ^ paddle to transform
                   -> Rectangle  -- ^ paddle transformed to a rectangle
-paddleToRectangle p = (paddleLoc p, paddleWidth, paddleHeight)
+paddleToRectangle p = (paddleLoc p, paddleWidth p, paddleHeight)
 
 -- | Create the first level
 levelOne :: Level
@@ -140,5 +145,6 @@ initialState = Game
     , bricks = levelOne
     , paddle = Paddle { paddleLoc = (0,-(gameHeight / 2) + 50)
                       , paddleVel = (0,0)
+                      , paddleWidth = 100
                       }
     }
