@@ -10,6 +10,7 @@ module Physics
   , isGameOver
   , paddleBounce
   , resetPaddleVel
+  , moveItems
   ) where
 
 import Data.List (sortOn)
@@ -97,6 +98,20 @@ movePaddle game
         rightGameBorder = gameWidth / 2 - wallWidth / 2
         paddleStep = 1
 
+-- | Update the items positions
+moveItems :: Game  -- ^ game to update
+          -> Game  -- ^ game updated
+moveItems game = game {items = fmap (moveItem itemVel) itemLts}
+      where itemLts = items game
+
+
+-- | update item position
+moveItem :: Velocity  -- ^ item velocity
+         -> Item      -- ^ item to move
+         -> Item      -- ^ item with a new position
+moveItem (velx, vely) i = i { itemPos = (x + velx, y + vely)}
+      where (x, y) = itemPos i
+
 
 
 --  | Update the ball velocity and bricks if the ball hits a brick
@@ -108,11 +123,13 @@ bricksBounce s game = case bc of
       Just (vx, vy) -> game { bricks    = bricksUpdated
                             , ballVel   = speedUp (vx / s, vy / s)
                             , gameScore = addScore score
+                            , items     = itemsUpdated ++ itemLts
                             }
       where
-        (bc, bricksUpdated, _) = bricksCollision (vx * s, vy * s) (ballDots game) (bricks game)
+        (bc, bricksUpdated, itemsUpdated) = bricksCollision (vx * s, vy * s) (ballDots game) (bricks game)
         (vx, vy) = ballVel game
         score = gameScore game
+        itemLts = items game
 
 -- | Detect collision on the paddle and change velocity and score
 paddleBounce :: Seconds -- ^ second since last update

@@ -42,6 +42,7 @@ update :: Float   -- ^ The number of seconds since last update
 -- Game playing
 update seconds game @ Game { gameState = Playing }
       = isGameOver
+      . moveItems
       . resetPaddleVel
       . movePaddle
       . paddleBounce seconds

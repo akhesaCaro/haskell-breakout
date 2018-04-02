@@ -7,6 +7,7 @@ module GameBoard
     , ballRadius, speedRatio
     , wallUpPos, wallDownPos, wallLeftPos, wallRightPos
     , paddleHeight
+    , itemWidth, itemHeight, itemVel
     , Position
     , Score
     , Radius
@@ -39,10 +40,11 @@ winHeight = floor (gameHeight + wallWidth * 2)
 
 -- | all the widths : brick, game, paddle
 -- wallWidth = thickness
-gameWidth, wallWidth, brickWidth :: Width
+gameWidth, wallWidth, brickWidth, itemWidth :: Width
 gameWidth = 800
 wallWidth = 10
 brickWidth = 100
+itemWidth  = 15
 
 -- | speed ration (when the ball hits a brick)
 speedRatio :: Float
@@ -51,10 +53,11 @@ brickStepX = brickWidth + 10
 brickStepY = brickHeight + 10
 
 -- | all the heights : brick, game, paddle
-brickHeight, gameHeight, paddleHeight :: Height
+brickHeight, gameHeight, paddleHeight, itemHeight :: Height
 brickHeight = 40
 gameHeight = 800
 paddleHeight = 20
+itemHeight = 15
 
 -- | Radius of the ball
 ballRadius :: Radius
@@ -66,6 +69,9 @@ wallUpPos    = (0, gameHeight / 2)      -- ^ top wall position
 wallDownPos  = (0,-(gameHeight/ 2))     -- ^ botom wall position
 wallLeftPos  = (-(gameWidth / 2) , 0)   -- ^ left wall position
 wallRightPos = (gameWidth / 2, 0)       -- ^ right wall position
+
+itemVel :: Velocity
+itemVel = (0, -5)
 
 -- | aliases
 type Score = Integer
