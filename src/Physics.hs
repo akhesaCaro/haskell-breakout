@@ -104,14 +104,12 @@ moveItems :: Game  -- ^ game to update
 moveItems game = game { items = itemsUpdated
                     --  , paddle = p {paddleWidth = paddleW / 2}
                       }
-      where itemLts       = items game
-            p             = paddle game
-            paddleW       = paddleWidth p
-            itemsUpdated  = catMaybes
-                           . fmap (itemCollision (paddle game))
-                           . catMaybes
-                           . fmap (moveItem itemVel) $ itemLts
-
+      where itemLts                      = items game
+            p                            = paddle game
+            paddleW                      = paddleWidth p
+            (itemsUpdated, itemTypeList) =  itemsCollision (paddle game)
+                                            . catMaybes
+                                            . fmap (moveItem itemVel) $ itemLts
 -- | update item position
 moveItem :: Velocity  -- ^ item velocity
          -> Item      -- ^ item to move

@@ -4,7 +4,7 @@ module CollisionDetection
   , collisionToSpeed
   , bricksCollision
   , CollisionSide (..)
-  , itemCollision
+  , itemsCollision
   ) where
 
 import Data.List (sortOn)
@@ -20,10 +20,26 @@ data CollisionSide =
 -- Aliases
 type Speed = (Float, Float)
 
+-- | calculate if there a hit between an item and the paddle, if so, it return
+--   the items list and the hitten itemType list
+itemsCollision :: Paddle                -- ^ paddle
+               -> [Item]                -- ^ item list
+               -> ([Item], [ItemType])  -- ^ item list and itemType list tuple
+itemsCollision p items = go p items ([], [])
+      where go :: Paddle
+               -> [Item]
+               -> ([Item], [ItemType])
+               -> ([Item], [ItemType])
+            go _ [] (itemLts, itemTypeLts) = (itemLts, itemTypeLts)
+            go p (i:items) (itemLts, itemTypeLts) = case collision of
+                  Nothing -> go p items (itemLts, itemTypeLts)
+                  Just hittenItem -> (hittenItem:itemLts, itemType hittenItem:itemTypeLts)
+                  where collision = itemCollision p i
+
 -- | Calculate if there a hit between an item and the paddle
-itemCollision :: Paddle      -- ^ Paddle
-               -> Item      -- ^ item
-               -> Maybe Item      -- ^ item updated
+itemCollision :: Paddle       -- ^ Paddle
+               -> Item        -- ^ item
+               -> Maybe Item  -- ^ item updated
 itemCollision p i = case collision of
                   Nothing -> Just i
                   _       -> Nothing
