@@ -18,6 +18,8 @@ import GameBoard
 import CollisionDetection
 import Data.Maybe
 
+import Debug.Trace
+
 import Maths
 
 -- aliases
@@ -101,15 +103,23 @@ movePaddle game
 -- | Update the items positions
 moveItems :: Game  -- ^ game to update
           -> Game  -- ^ game updated
-moveItems game = game { items = itemsUpdated
-                    --  , paddle = p {paddleWidth = paddleW / 2}
-                      }
-      where itemLts                      = items game
-            p                            = paddle game
-            paddleW                      = paddleWidth p
-            (itemsUpdated, itemTypeList) =  itemsCollision (paddle game)
-                                            . catMaybes
-                                            . fmap (moveItem itemVel) $ itemLts
+moveItems game = go itemTypeList game
+      where
+            (itemsUpdated, itemTypeList) = itemsCollision (paddle game)
+                                          . catMaybes
+                                          . fmap (moveItem itemVel) $ items game
+            go :: [ItemType] -> Game -> Game
+            go [] game = game { items = itemsUpdated }
+            go (PaddleExpander:xs) game = go xs game { paddle = p {paddleWidth = paddleW + 10 }}
+              where
+                  p = paddle game
+                  paddleW = paddleWidth p
+            go (PaddleMinifier:xs) game = go xs game { paddle = p {paddleWidth = paddleW - 10 }}
+              where
+                  p = paddle game
+                  paddleW = paddleWidth p
+
+
 -- | update item position
 moveItem :: Velocity  -- ^ item velocity
          -> Item      -- ^ item to move

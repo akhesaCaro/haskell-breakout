@@ -12,6 +12,8 @@ import GameBoard
 import Maths
 import Data.Maybe
 
+import Debug.Trace
+
 -- | Collision side
 data CollisionSide =
       LeftSide | TopSide | RightSide | BottomSide
@@ -25,23 +27,24 @@ type Speed = (Float, Float)
 itemsCollision :: Paddle                -- ^ paddle
                -> [Item]                -- ^ item list
                -> ([Item], [ItemType])  -- ^ item list and itemType list tuple
-itemsCollision p items = go p items ([], [])
+itemsCollision p items = go p (traceShowId items) ([], [])
       where go :: Paddle
                -> [Item]
                -> ([Item], [ItemType])
                -> ([Item], [ItemType])
-            go _ [] (itemLts, itemTypeLts) = (itemLts, itemTypeLts)
-            go p (i:items) (itemLts, itemTypeLts) = case collision of
-                  Nothing -> go p items (itemLts, itemTypeLts)
-                  Just hittenItem -> (hittenItem:itemLts, itemType hittenItem:itemTypeLts)
-                  where collision = itemCollision p i
+            go _ [] (itemLts, itemTypeLts) = traceShowId $ (itemLts, itemTypeLts)
+            go p (i:items) (itemLts, itemTypeLts)
+                  = case collision of
+                        Nothing         -> go p items (i:itemLts, itemTypeLts)
+                        Just hittenItem -> (itemLts, itemType hittenItem:itemTypeLts)
+                        where collision =  itemCollision p i
 
 -- | Calculate if there a hit between an item and the paddle
 itemCollision :: Paddle       -- ^ Paddle
                -> Item        -- ^ item
                -> Maybe Item  -- ^ item updated
 itemCollision p i = case collision of
-                  Nothing -> Just i
+                  Just (_, _) -> Just i
                   _       -> Nothing
 
       where
@@ -51,7 +54,7 @@ itemCollision p i = case collision of
 
 -- | Calculate if there a hit between the ball and one of the brick
 --   the system the list of bricks updated and the new speed of the ball
-bricksCollision :: Speed      -- ^ object speed (velocity * seconds since last update)
+bricksCollision :: Speed      -- ^ obje3ct speed (velocity * seconds since last update)
                 -> [Position] -- ^ dot position
                 -> [Brick]    -- ^ list of bricks
                 -> (Maybe Speed, [Brick], [Item]) -- ^ new speed with brick updated

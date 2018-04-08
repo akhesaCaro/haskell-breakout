@@ -15,7 +15,7 @@ module GameBoard
     , Width
     , Height
     , Rectangle
-    , ItemType
+    , ItemType (..)
     , Brick(..)
     , Game (..)
     , Paddle (..)
