@@ -12,8 +12,6 @@ import GameBoard
 import Maths
 import Data.Maybe
 
-import Debug.Trace
-
 -- | Collision side
 data CollisionSide =
       LeftSide | TopSide | RightSide | BottomSide
@@ -27,12 +25,12 @@ type Speed = (Float, Float)
 itemsCollision :: Paddle                -- ^ paddle
                -> [Item]                -- ^ item list
                -> ([Item], [ItemType])  -- ^ item list and itemType list tuple
-itemsCollision p items = go p (traceShowId items) ([], [])
+itemsCollision p items = go p items ([], [])
       where go :: Paddle
                -> [Item]
                -> ([Item], [ItemType])
                -> ([Item], [ItemType])
-            go _ [] (itemLts, itemTypeLts) = traceShowId $ (itemLts, itemTypeLts)
+            go _ [] (itemLts, itemTypeLts) = (itemLts, itemTypeLts)
             go p (i:items) (itemLts, itemTypeLts)
                   = case collision of
                         Nothing         -> go p items (i:itemLts, itemTypeLts)

@@ -11,14 +11,13 @@ module Physics
   , paddleBounce
   , resetPaddleVel
   , moveItems
+  , itemsBounce
   ) where
 
 import Data.List (sortOn)
 import GameBoard
 import CollisionDetection
 import Data.Maybe
-
-import Debug.Trace
 
 import Maths
 
@@ -100,24 +99,31 @@ movePaddle game
         rightGameBorder = gameWidth / 2 - wallWidth / 2
         paddleStep = 1
 
+
+itemsBounce :: Game
+            -> Game
+itemsBounce game = go itemTypeList game
+  where
+        (itemsUpdated, itemTypeList) = itemsCollision (paddle game) (items game)
+
+        go :: [ItemType] -> Game -> Game
+        go [] game = game { items = itemsUpdated }
+        go (PaddleExpander:xs) game = go xs game { paddle = p {paddleWidth = paddleW + 10 }}
+          where
+              p = paddle game
+              paddleW = paddleWidth p
+        go (PaddleMinifier:xs) game = go xs game { paddle = p {paddleWidth = paddleW - 10 }}
+          where
+              p = paddle game
+              paddleW = paddleWidth p
+
 -- | Update the items positions
 moveItems :: Game  -- ^ game to update
           -> Game  -- ^ game updated
-moveItems game = go itemTypeList game
-      where
-            (itemsUpdated, itemTypeList) = itemsCollision (paddle game)
-                                          . catMaybes
-                                          . fmap (moveItem itemVel) $ items game
-            go :: [ItemType] -> Game -> Game
-            go [] game = game { items = itemsUpdated }
-            go (PaddleExpander:xs) game = go xs game { paddle = p {paddleWidth = paddleW + 10 }}
-              where
-                  p = paddle game
-                  paddleW = paddleWidth p
-            go (PaddleMinifier:xs) game = go xs game { paddle = p {paddleWidth = paddleW - 10 }}
-              where
-                  p = paddle game
-                  paddleW = paddleWidth p
+moveItems game = game { items = itemsUpdated }
+      where itemsUpdated = catMaybes
+                         . fmap (moveItem itemVel) $  items game
+
 
 
 -- | update item position
