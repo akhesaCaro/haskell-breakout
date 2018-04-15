@@ -1,3 +1,5 @@
+{-# LANGUAGE ScopedTypeVariables #-}
+
 module GameBoard
     ( winHeight, winWidth, offset
     , gameWidth, gameHeight
@@ -28,6 +30,8 @@ module GameBoard
 
 -- I want to use my own Vector.
 import Graphics.Gloss  hiding (Vector)
+
+import System.Random
 
 -- | position of the window on the screen
 offset:: Int
@@ -95,9 +99,9 @@ data GameState =
 
 -- | Brick
 data Brick = Brick
-    { brickCol  :: Color     -- ^ brick color
-    , brickItem :: ItemType  -- ^ item type hidden in the brick
-    , brickLoc  :: Position  -- ^ brick (x, y) location
+    { brickCol  :: Color            -- ^ brick color
+    , brickItem :: Maybe ItemType   -- ^ item type hidden in the brick
+    , brickLoc  :: Position         -- ^ brick (x, y) location
     } deriving Show
 
 -- | Paddle
@@ -136,19 +140,48 @@ paddleToRectangle :: Paddle     -- ^ paddle to transform
                   -> Rectangle  -- ^ paddle transformed to a rectangle
 paddleToRectangle p = (paddleLoc p, paddleWidth p, paddleHeight)
 
+
+-- |  Foldbrick function to use in the foldr
+--    From a tuple of a ranomGen and list of bricks and a position,
+--    it return a new generator and a List with a new brick made with the position
+foldBrick :: Position           -- ^ position (to build the new brick)
+          -> (StdGen, [Brick])  -- ^ random generator + initial list of bricks
+          -> (StdGen, [Brick])  -- ^ new gen (returned by the random operation)
+                                --   and the new list of bricks (with the new one)
+foldBrick pos (sg, bricks) =
+      case isItem of
+            True  -> (newSG',Brick yellow (Just i) pos:bricks)
+            False -> (newSG',Brick yellow Nothing pos:bricks)
+
+-- foldr :: (a -> b -> b) -> b -> [a] -> b
+        where (isItem :: Bool, newSG) = random sg
+              (r, newSG') = randomR (1 :: Integer, 2) newSG
+              i = case r of
+                    1 -> PaddleExpander
+                    2 -> PaddleMinifier
+
+-- | make a list a bricks from a list of position
+mkBricks :: [Position]
+         -> [Brick]
+mkBricks posLts = bricks
+-- todo, need to call foldr with foldBrick function
+      where (_, bricks) = foldr foldBrick (gen, []) posLts
+            gen = mkStdGen 1234
+
+
 -- | Create the first level
 levelOne :: Level
-levelOne = map (Brick col item) brickPos
+levelOne = mkBricks brickPos
       where
         grid = (,) <$> [-3..3] <*> [1..6]
         brickPos = map (\(x, y) -> (x*brickStepX, y*brickStepY)) grid
-        col = yellow
-        item = PaddleExpander
+
 
 -- | Add brick points to score.
 addScore :: Score  -- ^ current score
          -> Score  -- ^ updated score
 addScore = (+10)
+
 
 -- | initial game state
 initialState :: Game

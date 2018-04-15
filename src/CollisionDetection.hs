@@ -69,7 +69,10 @@ bricksCollision ballSpeed dots bricks = go ballSpeed dots bricks (Nothing, [], [
                                                 (t, collisionSide)
                                                 ballSpeed
                                                 , brickLts ++ bs
-                                                , Item{itemType = brickItem brick, itemPos = brickLoc brick} : itemLts)
+                                                , case brickItem brick of
+                                                    Nothing -> itemLts
+                                                    Just t ->
+                                                      Item{itemType = t, itemPos = brickLoc brick} : itemLts)
               where
               collision
                     = detectDotsCollision ballSpeed dots (brickToRectangle brick)
