@@ -15,6 +15,10 @@ import System.Exit
 handleKeysIO :: Event
              -> Game
              -> IO Game
+
+-- For an 'q' keypress, exit the game
+handleKeysIO (EventKey (Char 'q') Up _ _) game = exitSuccess
+
 handleKeysIO event game = return $ handleKeys event game
 
 -- | Pure responding to key events.
