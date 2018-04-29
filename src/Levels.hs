@@ -9,9 +9,9 @@ module Levels
   isLevelOver :: Game -> Game
   isLevelOver game@ Game { bricks = [] } =  if isWin
                                             then game { gameState = Win }
-                                            else initialState { level = gameLevel + 1
-                                                              , gameState = Playing
-                                                              }
+                                            else newLevelState (gameLevel + 1) score
+
         where gameLevel = level game
+              score = gameScore game
               isWin = gameLevel > 9
   isLevelOver game = game

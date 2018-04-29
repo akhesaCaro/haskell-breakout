@@ -22,9 +22,9 @@ renderScore s = translate (- (gameWidth / 2) + 15) ((gameHeight / 2) - 50)
               $ Text ("Score : " ++ show s)
 
 -- | Render level
-renderLevel :: LevelNumber    -- ^ level to render
-            -> Picture        -- ^ picture of the level
-renderLevel l = translate ((gameWidth / 2) - 110) ((gameHeight / 2) - 50)
+renderGameLevel :: GameLevel      -- ^ level to render
+                -> Picture        -- ^ picture of the level
+renderGameLevel l = translate ((gameWidth / 2) - 110) ((gameHeight / 2) - 50)
               $ scale 0.15 0.15
               $ color yellow
               $ Text ("Level : " ++ show l)
@@ -140,7 +140,7 @@ renderGame game @ Game { gameState = Playing } library = pictures
       , pictures . fmap (renderDot white 2) $ ballDots game
       , pictures . fmap (renderItem white) $ items game
       , renderScore (gameScore game)
-      , renderLevel (level game)
+      , renderGameLevel (level game)
       ]
       where
         wallColor = blue

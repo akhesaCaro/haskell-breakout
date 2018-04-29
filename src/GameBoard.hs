@@ -23,10 +23,11 @@ module GameBoard
     , Paddle (..)
     , GameState (..)
     , Item (..)
-    , LevelNumber
+    , GameLevel
     , brickToRectangle
     , paddleToRectangle
     , initialState
+    , newLevelState
     ) where
 
 -- I want to use my own Vector.
@@ -82,7 +83,7 @@ itemVel = (0, -5)
 type Score = Integer
 type Radius = Float
 type Level = [Brick]
-type LevelNumber = Integer
+type GameLevel = Integer
 type Velocity = (Float, Float)
 type Position = (Float, Float)
 type Width = Float
@@ -130,7 +131,7 @@ data Game = Game
     , bricks :: [Brick]       -- ^ bricks list
     , paddle :: Paddle        -- ^ paddle
     , items :: [Item]         -- ^ items falling
-    , level :: LevelNumber    -- ^ level number
+    , level :: GameLevel      -- ^ level number
     } deriving Show
 
 -- | Transform a brick to a rectangle
@@ -147,36 +148,43 @@ paddleToRectangle p = (paddleLoc p, paddleWidth p, paddleHeight)
 -- |  Foldbrick function to use in the foldr
 --    From a tuple of a ranomGen and list of bricks and a position,
 --    it return a new generator and a List with a new brick made with the position
-foldBrick :: Position                   -- ^ position (to build the new brick)
+foldBrick :: GameLevel                -- ^ level number (probability to have a brick)
+          -> Position                   -- ^ position (to build the new brick)
           -> (StdGen, StdGen, [Brick])  -- ^ random brick + + random item + initial list of bricks
           -> (StdGen, StdGen, [Brick])  -- ^ new gen (returned by the random operation)
                                         --   and the new list of bricks (with the new one)
-foldBrick pos (sgItem, sgBrick, bricks) =
+foldBrick level pos (sgItem, sgBrick, bricks) =
       case isBrick of
             True -> case isItem of
                           True  -> (newSGItem', newSGBrick, Brick yellow (Just itemType) pos:bricks)
                           False -> (newSGItem', newSGBrick, Brick yellow Nothing pos:bricks)
             False -> (newSGItem', newSGBrick, bricks)
       where (isItem :: Bool, newSGItem) = random sgItem
-            (r, newSGItem') = randomR (1 :: Integer, 2) newSGItem
-            itemType = case r of
+            (rItem, newSGItem') = randomR (1 :: Integer, 2) newSGItem
+            itemType = case rItem of
                   1 -> PaddleExpander
                   2 -> PaddleMinifier
             -- Is there a brick or not
-            (isBrick :: Bool, newSGBrick) = random sgBrick
+            (rBrick, newSGBrick) = randomR (1 :: Integer, 10) sgBrick
+            isBrick = if rBrick <= level
+                      then True
+                      else False
 
 -- | make a list a bricks from a list of position
-mkBricks :: [Position]
+mkBricks :: [Position]    -- ^ Position where to draw bricks
+         -> GameLevel     -- ^ game level (probability to render all bricks)
          -> [Brick]
-mkBricks posLts = bricks
-      where (_, _, bricks) = foldr foldBrick (genItem, genBrick, []) posLts
+mkBricks posLts level  = bricks
+      where (_, _, bricks) = foldr foldBrickWithLevel (genItem, genBrick, []) posLts
+            foldBrickWithLevel = foldBrick level
             genItem   = mkStdGen 1234
             genBrick  = mkStdGen 1235
 
 
 -- | Create the first level
-levelOne :: Level
-levelOne = mkBricks brickPos
+mkLevel :: GameLevel
+        -> Level
+mkLevel gl = mkBricks brickPos gl
       where
         grid = (,) <$> [-3..3] <*> [1..6]
         brickPos = map (\(x, y) -> (x*brickStepX, y*brickStepY)) grid
@@ -197,11 +205,31 @@ initialState = Game
     , ballLoc = (0, -200)
     , ballVel = (50, 150)
     , ballDots = [(0, 0)]
-    , bricks = levelOne
+    , bricks = mkLevel 1
     , paddle = Paddle { paddleLoc = (0,-(gameHeight / 2) + 50)
                       , paddleVel = (0,0)
                       , paddleWidth = 100
                       }
     , items = []
     , level = 1
+    }
+
+-- | new Level
+newLevelState :: GameLevel -- ^ game level
+              -> Score     -- ^ game score
+              -> Game      -- ^ new game state
+newLevelState l s = Game
+    { gameState = Playing
+    , gameScore = s
+    , mouseEvent = False
+    , ballLoc = (0, -200)
+    , ballVel = (50, 150)
+    , ballDots = [(0, 0)]
+    , bricks = mkLevel l
+    , paddle = Paddle { paddleLoc = (0,-(gameHeight / 2) + 50)
+                      , paddleVel = (0,0)
+                      , paddleWidth = 100
+                      }
+    , items = []
+    , level = l
     }
