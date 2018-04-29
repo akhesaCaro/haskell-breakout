@@ -111,9 +111,9 @@ renderGame game @ Game { gameState = MainMenu } _ = pictures
 
 -- GameOver state
 renderGame game @ Game { gameState = GameOver } _ = pictures
-      [ renderStateText orange "Game Over" (-170, 0) (0.5, 0.5)
-      , renderStateText orange "Score : " (-60 , -80) (0.25, 0.25)
-      , renderStateText orange (show $ gameScore game)  (70, -80) (0.25, 0.25)
+      [ renderStateText orange "Game Over" (-170, 80) (0.5, 0.5)
+      , renderStateText orange ("Level : " ++  (show $ level game)) (-50, -10) (0.25, 0.25)
+      , renderStateText orange ("Score : " ++ (show $ gameScore game)) (-60 , -80) (0.25, 0.25)
       , renderStateText orange "Press ANY key" (-100, -150) (0.25, 0.25)
       ]
 
