@@ -51,6 +51,8 @@ handleKeys (EventKey (SpecialKey KeyEnter) Down _ _) game@ Game { gameState = Ma
 
 -- Press any key to reset the game
 handleKeys (EventKey _ Down _ _) game@ Game { gameState = GameOver } = initialState
+handleKeys (EventKey _ Down _ _) game@ Game { gameState = Win } = initialState
+
 
 -- Do nothing for all other events.
 handleKeys _ game = game
