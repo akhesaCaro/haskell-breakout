@@ -97,7 +97,7 @@ data ItemType = PaddleExpander | PaddleMinifier
 
 -- | The game state
 data GameState =
-  MainMenu | Playing | Paused | GameOver | Win
+  MainMenu | Playing | Paused | GameOver | Win | NextLevel
   deriving Show
 
 -- | Brick
@@ -219,7 +219,7 @@ newLevelState :: GameLevel -- ^ game level
               -> Score     -- ^ game score
               -> Game      -- ^ new game state
 newLevelState l s = Game
-    { gameState = Playing
+    { gameState = NextLevel
     , gameScore = s
     , mouseEvent = False
     , ballLoc = (0, -200)

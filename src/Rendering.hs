@@ -129,6 +129,15 @@ renderGame game @ Game { gameState = Win } _ = pictures
 renderGame game @ Game { gameState = Paused } _ =
       renderStateText orange "PAUSED" (-120, 0) (0.5, 0.5)
 
+
+-- Between two levels state
+renderGame game @ Game { gameState = NextLevel } _ = pictures
+      [ renderStateText orange ("Next Level : " ++ (show $ level game)) (-170, 0) (0.5, 0.5)
+      , renderStateText orange ("Score : " ++ (show $ gameScore game)) (-60 , -80) (0.25, 0.25)
+      , renderStateText orange "Press ANY key" (-100, -150) (0.25, 0.25)
+      ]
+
+
 -- Playing state
 renderGame game @ Game { gameState = Playing } library = pictures
       [ renderBall (dark red) 10 (ballLoc game)

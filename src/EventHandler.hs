@@ -53,6 +53,9 @@ handleKeys (EventKey (SpecialKey KeyEnter) Down _ _) game@ Game { gameState = Ma
 handleKeys (EventKey _ Down _ _) game@ Game { gameState = GameOver } = initialState
 handleKeys (EventKey _ Down _ _) game@ Game { gameState = Win } = initialState
 
+-- Press any key to continue
+handleKeys (EventKey _ Down _ _) game@ Game { gameState = NextLevel }
+    = game { gameState = Playing }
 
 -- Do nothing for all other events.
 handleKeys _ game = game
