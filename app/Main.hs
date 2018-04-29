@@ -18,7 +18,7 @@ import  Graphics.Gloss.Interface.IO.Game
 
 -- | Window background Color
 background :: Color
-background = greyN 0.5
+background = greyN 0.1
 
 
 -- | update world

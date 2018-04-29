@@ -71,10 +71,10 @@ ballRadius = 10
 
 -- | All the wall positions
 wallUpPos, wallDownPos, wallLeftPos, wallRightPos :: Position
-wallUpPos    = (0, gameHeight / 2)      -- ^ top wall position
+wallUpPos    = (0, gameHeight / 2 + (wallWidth / 2))      -- ^ top wall position
 wallDownPos  = (0,-(gameHeight/ 2))     -- ^ botom wall position
-wallLeftPos  = (-(gameWidth / 2) , 0)   -- ^ left wall position
-wallRightPos = (gameWidth / 2, 0)       -- ^ right wall position
+wallLeftPos  = (-(gameWidth / 2) - (wallWidth / 2) , 0)   -- ^ left wall position
+wallRightPos = (gameWidth / 2 + (wallWidth / 2), 0)       -- ^ right wall position
 
 itemVel :: Velocity
 itemVel = (0, -5)
