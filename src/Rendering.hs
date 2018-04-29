@@ -109,6 +109,14 @@ renderGame game @ Game { gameState = GameOver } _ = pictures
       , renderStateText orange "Press ANY key" (-100, -150) (0.25, 0.25)
       ]
 
+-- Win state
+renderGame game @ Game { gameState = Win } _ = pictures
+      [ renderStateText orange "You Win!" (-170, 0) (0.5, 0.5)
+      , renderStateText orange "Score : " (-60 , -80) (0.25, 0.25)
+      , renderStateText orange (show $ gameScore game)  (70, -80) (0.25, 0.25)
+      , renderStateText orange "Press ANY key" (-100, -150) (0.25, 0.25)
+      ]
+
 -- Paused state
 renderGame game @ Game { gameState = Paused } _ =
       renderStateText orange "PAUSED" (-120, 0) (0.5, 0.5)

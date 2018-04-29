@@ -7,6 +7,7 @@ import  EventHandler
 import  GameBoard
 import  Physics
 import  Rendering
+import  Levels
 
 -- Conflict with the type Vector in module Maths
 import  Graphics.Gloss hiding (Vector)
@@ -42,6 +43,7 @@ update :: Float   -- ^ The number of seconds since last update
 -- Game playing
 update seconds game @ Game { gameState = Playing }
       = isGameOver
+      . isLevelOver
       . itemsBounce
       . moveItems
       . resetPaddleVel

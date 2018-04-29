@@ -81,6 +81,7 @@ itemVel = (0, -5)
 type Score = Integer
 type Radius = Float
 type Level = [Brick]
+type LevelNumber = Integer
 type Velocity = (Float, Float)
 type Position = (Float, Float)
 type Width = Float
@@ -94,7 +95,7 @@ data ItemType = PaddleExpander | PaddleMinifier
 
 -- | The game state
 data GameState =
-  MainMenu | Playing | Paused | GameOver
+  MainMenu | Playing | Paused | GameOver | Win
   deriving Show
 
 -- | Brick
@@ -128,6 +129,7 @@ data Game = Game
     , bricks :: [Brick]       -- ^ bricks list
     , paddle :: Paddle        -- ^ paddle
     , items :: [Item]         -- ^ items falling
+    , level :: LevelNumber    -- ^ level number
     } deriving Show
 
 -- | Transform a brick to a rectangle
@@ -198,4 +200,5 @@ initialState = Game
                       , paddleWidth = 100
                       }
     , items = []
+    , level = 1
     }
