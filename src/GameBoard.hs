@@ -146,29 +146,31 @@ paddleToRectangle p = (paddleLoc p, paddleWidth p, paddleHeight)
 -- |  Foldbrick function to use in the foldr
 --    From a tuple of a ranomGen and list of bricks and a position,
 --    it return a new generator and a List with a new brick made with the position
-foldBrick :: Position           -- ^ position (to build the new brick)
-          -> (StdGen, [Brick])  -- ^ random generator + initial list of bricks
-          -> (StdGen, [Brick])  -- ^ new gen (returned by the random operation)
-                                --   and the new list of bricks (with the new one)
-foldBrick pos (sg, bricks) =
-      case isItem of
-            True  -> (newSG',Brick yellow (Just i) pos:bricks)
-            False -> (newSG',Brick yellow Nothing pos:bricks)
-
--- foldr :: (a -> b -> b) -> b -> [a] -> b
-        where (isItem :: Bool, newSG) = random sg
-              (r, newSG') = randomR (1 :: Integer, 2) newSG
-              i = case r of
-                    1 -> PaddleExpander
-                    2 -> PaddleMinifier
+foldBrick :: Position                   -- ^ position (to build the new brick)
+          -> (StdGen, StdGen, [Brick])  -- ^ random brick + + random item + initial list of bricks
+          -> (StdGen, StdGen, [Brick])  -- ^ new gen (returned by the random operation)
+                                        --   and the new list of bricks (with the new one)
+foldBrick pos (sgItem, sgBrick, bricks) =
+      case isBrick of
+            True -> case isItem of
+                          True  -> (newSGItem', newSGBrick, Brick yellow (Just itemType) pos:bricks)
+                          False -> (newSGItem', newSGBrick, Brick yellow Nothing pos:bricks)
+            False -> (newSGItem', newSGBrick, bricks)
+      where (isItem :: Bool, newSGItem) = random sgItem
+            (r, newSGItem') = randomR (1 :: Integer, 2) newSGItem
+            itemType = case r of
+                  1 -> PaddleExpander
+                  2 -> PaddleMinifier
+            -- Is there a brick or not
+            (isBrick :: Bool, newSGBrick) = random sgBrick
 
 -- | make a list a bricks from a list of position
 mkBricks :: [Position]
          -> [Brick]
 mkBricks posLts = bricks
--- todo, need to call foldr with foldBrick function
-      where (_, bricks) = foldr foldBrick (gen, []) posLts
-            gen = mkStdGen 1234
+      where (_, _, bricks) = foldr foldBrick (genItem, genBrick, []) posLts
+            genItem   = mkStdGen 1234
+            genBrick  = mkStdGen 1235
 
 
 -- | Create the first level
