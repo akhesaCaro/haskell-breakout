@@ -13,5 +13,5 @@ module Levels
                                                               , gameState = Playing
                                                               }
         where gameLevel = level game
-              isWin = gameLevel > 10
+              isWin = gameLevel > 9
   isLevelOver game = game

@@ -23,6 +23,7 @@ module GameBoard
     , Paddle (..)
     , GameState (..)
     , Item (..)
+    , LevelNumber
     , brickToRectangle
     , paddleToRectangle
     , initialState

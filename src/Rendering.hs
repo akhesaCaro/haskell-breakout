@@ -16,10 +16,18 @@ data Library = Library
 -- | Render score
 renderScore :: Score    -- ^ score to render
             -> Picture  -- ^ picture of the score
-renderScore s = translate (-10) ((gameHeight / 2) - 50)
-              $ scale 0.25 0.25
-              $ color blue
-              $ Text (show s)
+renderScore s = translate (- (gameWidth / 2) + 15) ((gameHeight / 2) - 50)
+              $ scale 0.15 0.15
+              $ color yellow
+              $ Text ("Score : " ++ show s)
+
+-- | Render level
+renderLevel :: LevelNumber    -- ^ level to render
+            -> Picture        -- ^ picture of the level
+renderLevel l = translate ((gameWidth / 2) - 110) ((gameHeight / 2) - 50)
+              $ scale 0.15 0.15
+              $ color yellow
+              $ Text ("Level : " ++ show l)
 
 -- | render dot that indicate the potential hiting point
 renderDot :: Color    -- ^ dot color
@@ -132,6 +140,7 @@ renderGame game @ Game { gameState = Playing } library = pictures
       , pictures . fmap (renderDot white 2) $ ballDots game
       , pictures . fmap (renderItem white) $ items game
       , renderScore (gameScore game)
+      , renderLevel (level game)
       ]
       where
         wallColor = blue
