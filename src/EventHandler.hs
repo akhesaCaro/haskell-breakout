@@ -21,6 +21,13 @@ handleKeysIO event game = return $ handleKeys event game
 handleKeys :: Event     -- ^ keyEvent
            -> Game      -- ^ current game state
            -> Game      -- ^ Game updated
+
+-- Cheat code
+handleKeys (EventKey (Char 'n') Up _ _) game@ Game { gameState = Playing } =
+      newLevelState (level game + 1) 0
+handleKeys (EventKey (Char 'w') Up _ _) game@ Game { gameState = Playing } =
+      game { gameState = Win }
+
 -- For an 'Left' or 'Right' keypress, move verticaly player1 paddle
 handleKeys (EventKey (SpecialKey KeyLeft) Down _ _) game =
       game { paddle = (paddle game) { paddleVel = (-1 , 0) }}
