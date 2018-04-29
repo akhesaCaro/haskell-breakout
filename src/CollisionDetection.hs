@@ -34,7 +34,7 @@ itemsCollision p items = go p items ([], [])
             go p (i:items) (itemLts, itemTypeLts)
                   = case collision of
                         Nothing         -> go p items (i:itemLts, itemTypeLts)
-                        Just hittenItem -> (itemLts, itemType hittenItem:itemTypeLts)
+                        Just hittenItem -> go p items (itemLts, itemType hittenItem:itemTypeLts)
                         where collision =  itemCollision p i
 
 -- | Calculate if there a hit between an item and the paddle
