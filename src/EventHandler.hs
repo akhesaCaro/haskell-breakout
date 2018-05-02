@@ -1,7 +1,8 @@
 {-# LANGUAGE NamedFieldPuns #-}
 
 module EventHandler
-  ( handleKeys
+  ( handleKeysIO
+  , Event(..)
   ) where
 
 import GameBoard
@@ -9,6 +10,12 @@ import Physics
 
 import Graphics.Gloss.Interface.Pure.Game
 import System.Exit
+
+-- | IO responding to key events
+handleKeysIO :: Event
+             -> Game
+             -> IO Game
+handleKeysIO event game = return $ handleKeys event game
 
 -- | Pure responding to key events.
 handleKeys :: Event     -- ^ keyEvent
