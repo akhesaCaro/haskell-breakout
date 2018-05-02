@@ -52,7 +52,7 @@ update seconds game @ Game { gameState = Playing }
       . moveBall seconds
       . wallsBounce seconds
       . bricksBounce seconds
-      . computeDots $ game
+      . computeBallDots $ game
 
 -- Game in a main menu state / Game paused
 update _ game  = game
@@ -60,13 +60,13 @@ update _ game  = game
 -- | load library
 loadLibrary :: IO Library
 loadLibrary = do
-      (brickImg :: Picture)       <- loadBMP "/media/akhesa/16e1988c-fe98-4a2e-b528-320abdc3d132/akhesa/projects/haskell-breakout/library/purpleBrick.bmp"
-      (mainMenuImg :: Picture)    <- loadBMP "/media/akhesa/16e1988c-fe98-4a2e-b528-320abdc3d132/akhesa/projects/haskell-breakout/library/mainMenu.bmp"
-      (winImg :: Picture)         <- loadBMP "/media/akhesa/16e1988c-fe98-4a2e-b528-320abdc3d132/akhesa/projects/haskell-breakout/library/win.bmp"
-      (gameOverImg :: Picture)    <- loadBMP "/media/akhesa/16e1988c-fe98-4a2e-b528-320abdc3d132/akhesa/projects/haskell-breakout/library/gameOver.bmp"
-      (nextLevelImg :: Picture)   <- loadBMP "/media/akhesa/16e1988c-fe98-4a2e-b528-320abdc3d132/akhesa/projects/haskell-breakout/library/nextLevel.bmp"
-      (haskellLogoImg :: Picture) <- loadBMP "/media/akhesa/16e1988c-fe98-4a2e-b528-320abdc3d132/akhesa/projects/haskell-breakout/library/haskellLogo.bmp"
-      (pausedImg :: Picture)      <- loadBMP "/media/akhesa/16e1988c-fe98-4a2e-b528-320abdc3d132/akhesa/projects/haskell-breakout/library/paused.bmp"
+      (brickImg :: Picture)       <- loadBMP "./library/purpleBrick.bmp"
+      (mainMenuImg :: Picture)    <- loadBMP "./library/mainMenu.bmp"
+      (winImg :: Picture)         <- loadBMP "./library/win.bmp"
+      (gameOverImg :: Picture)    <- loadBMP "./library/gameOver.bmp"
+      (nextLevelImg :: Picture)   <- loadBMP "./library/nextLevel.bmp"
+      (haskellLogoImg :: Picture) <- loadBMP "./library/haskellLogo.bmp"
+      (pausedImg :: Picture)      <- loadBMP "./library/paused.bmp"
       return Library { brickImg = brickImg
                       , mainMenuImg = mainMenuImg
                       , winImg = winImg

@@ -4,7 +4,7 @@ module Physics
   ( moveBall
   , speedUp
   , movePaddle
-  , computeDots
+  , computeBallDots
   , wallsBounce
   , bricksBounce
   , isGameOver
@@ -28,23 +28,23 @@ type Seconds = Float
 speedUp :: Position -> Position
 speedUp (x, y) = (speedRatio * x, speedRatio * y)
 
--- | update the 3 dots position
-computeDots :: Game -- ^ current state game
+-- | update the 3 dots position used to calculate the collision vectors
+computeBallDots :: Game -- ^ current state game
             -> Game -- ^ game updated
-computeDots game = game { ballDots = [dot1, dot2, dot3]}
+computeBallDots game = game { ballDots = [dot1, dot2, dot3]}
       where
-        dot1 = computeDot (ballLoc game) (ballVel game) ballRadius
-        dot2 = computeDot (ballLoc game) nv ballRadius
+        dot1 = computeBallDot (ballLoc game) (ballVel game) ballRadius
+        dot2 = computeBallDot (ballLoc game) nv ballRadius
           where nv = matrixMultiplication ((0, 1),(-1, 0)) (ballVel game)
-        dot3 = computeDot (ballLoc game) nv ballRadius
+        dot3 = computeBallDot (ballLoc game) nv ballRadius
           where nv = matrixMultiplication ((0, -1),(1, 0)) (ballVel game)
 
 -- | Update the dot position with the velocity
-computeDot :: Position  -- ^ ball center
+computeBallDot :: Position  -- ^ ball center
            -> Velocity  -- ^ vector
            -> Radius    -- ^ ball radius
            -> Position  -- ^ dot position
-computeDot (x, y) (vx, vy) radius = (ax + x , ay + y)
+computeBallDot (x, y) (vx, vy) radius = (ax + x , ay + y)
       where
         ax = (vx * radius) / normV
         ay = (vy * radius) / normV

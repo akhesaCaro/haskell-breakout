@@ -203,7 +203,7 @@ initialState = Game
     , gameScore = 0
     , mouseEvent = False
     , ballLoc = (0, -200)
-    , ballVel = (50, 150)
+    , ballVel = (50, 200)
     , ballDots = [(0, 0)]
     , bricks = mkLevel 1
     , paddle = Paddle { paddleLoc = (0,-(gameHeight / 2) + 50)
