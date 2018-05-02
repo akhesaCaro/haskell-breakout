@@ -20,9 +20,14 @@ itemColor       = yellow
 
 -- | Images library
 data Library = Library
-      { brickImg :: Picture
+      { brickImg        :: Picture
+      , mainMenuImg     :: Picture
+      , winImg          :: Picture
+      , gameOverImg     :: Picture
+      , nextLevelImg    :: Picture
+      , haskellLogoImg  :: Picture
+      , pausedImg       :: Picture
       }
-
 
 -- | Render score
 renderScore :: Color    -- ^ color
@@ -122,43 +127,32 @@ renderGame :: Game      -- ^ The game state to render
            -> Picture   -- ^ A picture of this game state
 
 -- MainMenu state
-renderGame game @ Game { gameState = MainMenu } _ = pictures
-      [ renderBackground stateBGColor
-      , renderStateText stateText "Haskell" (-120, 100) (0.5, 0.5)
-      , renderStateText stateText "Breakout" (-150, 0) (0.5, 0.5)
-      , renderStateText stateText "Press ENTER to continue" (-200, -100) (0.25, 0.25)
-      ]
+renderGame game @ Game { gameState = MainMenu } library = mainMenuImg library
 
 -- GameOver state
-renderGame game @ Game { gameState = GameOver } _ = pictures
-      [ renderBackground stateBGColor
-      , renderStateText stateText "Game Over" (-170, 80) (0.5, 0.5)
-      , renderStateText stateText ("Level : " ++  (show $ level game)) (-50, -10) (0.25, 0.25)
-      , renderStateText stateText ("Score : " ++ (show $ gameScore game)) (-60 , -80) (0.25, 0.25)
-      , renderStateText stateText "Press ANY key" (-100, -150) (0.25, 0.25)
+renderGame game @ Game { gameState = GameOver } library = pictures
+      [ gameOverImg library
+      , renderStateText stateText (show $ level game) (-0,-175) (0.25, 0.25)
+      , renderStateText stateText (show $ gameScore game) (-20,-300) (0.25, 0.25)
       ]
 
 -- Win state
-renderGame game @ Game { gameState = Win } _ = pictures
-      [ renderBackground stateBGColor
-      , renderStateText stateText "You Win!" (-170, 0) (0.5, 0.5)
-      , renderStateText stateText "Score : " (-60 , -80) (0.25, 0.25)
-      , renderStateText stateText (show $ gameScore game)  (70, -80) (0.25, 0.25)
-      , renderStateText stateText "Press ANY key" (-100, -150) (0.25, 0.25)
-      ]
+renderGame game @ Game { gameState = Win } library = pictures
+        [ winImg library
+        , renderStateText stateText (show $ level game) (-0,-175) (0.25, 0.25)
+        , renderStateText stateText (show $ gameScore game) (-20,-300) (0.25, 0.25)
+        ]
 
 -- Paused state
-renderGame game @ Game { gameState = Paused } _ =
-      renderStateText stateText "PAUSED" (-120, 0) (0.5, 0.5)
+renderGame game @ Game { gameState = Paused } library = pausedImg library
 
 
 -- Between two levels state
-renderGame game @ Game { gameState = NextLevel } _ = pictures
-      [ renderStateText stateText ("Next Level : " ++ (show $ level game)) (-170, 0) (0.5, 0.5)
-      , renderStateText stateText ("Score : " ++ (show $ gameScore game)) (-60 , -80) (0.25, 0.25)
-      , renderStateText stateText "Press ANY key" (-100, -150) (0.25, 0.25)
-      ]
-
+renderGame game @ Game { gameState = NextLevel } library = pictures
+        [ nextLevelImg library
+        , renderStateText stateText (show $ level game) (0,-125) (0.25, 0.25)
+        , renderStateText stateText (show $ gameScore game) (0,-275) (0.25, 0.25)
+        ]
 
 -- Playing state
 renderGame game @ Game { gameState = Playing } library = pictures
