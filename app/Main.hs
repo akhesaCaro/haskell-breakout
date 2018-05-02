@@ -35,17 +35,18 @@ updateIO :: Float
 updateIO seconds game = return $ update seconds game
 
 
--- | Update the game by moving the ball and bouncing off walls.
+-- | Update the game state
 update :: Float   -- ^ The number of seconds since last update
        -> Game    -- ^ current game state
        -> Game    -- ^ A new game state with an updated ball and paddles positions.
 -- Game playing
 update seconds game @ Game { gameState = Playing }
       = isGameOver
+      . itemsBounce
+      . moveItems
       . resetPaddleVel
       . movePaddle
       . paddleBounce seconds
-      . bricksBounce seconds
       . moveBall seconds
       . wallsBounce seconds
       . bricksBounce seconds

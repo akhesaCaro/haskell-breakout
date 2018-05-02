@@ -10,6 +10,8 @@ module Physics
   , isGameOver
   , paddleBounce
   , resetPaddleVel
+  , moveItems
+  , itemsBounce
   ) where
 
 import Data.List (sortOn)
@@ -92,28 +94,64 @@ movePaddle game
       where
         (x, y) = paddleLoc $ paddle game
         vel = fst $ paddleVel $ paddle game
-        halfPaddle = paddleWidth / 2
+        halfPaddle = paddleWidth (paddle game) / 2
         leftGameBorder = -(gameWidth / 2) + wallWidth / 2
         rightGameBorder = gameWidth / 2 - wallWidth / 2
         paddleStep = 1
 
+
+itemsBounce :: Game
+            -> Game
+itemsBounce game = go itemTypeList game
+  where
+        (itemsUpdated, itemTypeList) = itemsCollision (paddle game) (items game)
+
+        go :: [ItemType] -> Game -> Game
+        go [] game = game { items = itemsUpdated }
+        go (PaddleExpander:xs) game = go xs game { paddle = p {paddleWidth = paddleW + 10 }}
+          where
+              p = paddle game
+              paddleW = paddleWidth p
+        go (PaddleMinifier:xs) game = go xs game { paddle = p {paddleWidth = paddleW - 10 }}
+          where
+              p = paddle game
+              paddleW = paddleWidth p
+
+-- | Update the items positions
+moveItems :: Game  -- ^ game to update
+          -> Game  -- ^ game updated
+moveItems game = game { items = itemsUpdated }
+      where itemsUpdated = catMaybes
+                         . fmap (moveItem itemVel) $  items game
+
+
+
+-- | update item position
+moveItem :: Velocity  -- ^ item velocity
+         -> Item      -- ^ item to move
+         -> Maybe Item      -- ^ item with a new position
+moveItem (velx, vely) i
+      | y < -(gameHeight / 2) = Nothing
+      | otherwise = Just i { itemPos = (x + velx, y + vely)}
+      where (x, y) = itemPos i
 
 
 --  | Update the ball velocity and bricks if the ball hits a brick
 bricksBounce :: Seconds   -- ^ Number of seconds since last update
               -> Game     -- ^ current state pf the game
               -> Game     -- ^ Game updated
-bricksBounce s game = case fst bc of
+bricksBounce s game = case bc of
       Nothing -> game
       Just (vx, vy) -> game { bricks    = bricksUpdated
                             , ballVel   = speedUp (vx / s, vy / s)
                             , gameScore = addScore score
+                            , items     = itemsUpdated ++ itemLts
                             }
       where
-        bc = bricksCollision (vx * s, vy * s) (ballDots game) (bricks game)
+        (bc, bricksUpdated, itemsUpdated) = bricksCollision (vx * s, vy * s) (ballDots game) (bricks game)
         (vx, vy) = ballVel game
-        bricksUpdated = snd bc
         score = gameScore game
+        itemLts = items game
 
 -- | Detect collision on the paddle and change velocity and score
 paddleBounce :: Seconds -- ^ second since last update

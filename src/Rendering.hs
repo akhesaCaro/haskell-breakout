@@ -51,10 +51,20 @@ renderWall col width height (x , y) = translate x y
                                     $ color col
                                     $ rectangleSolid width height
 
+-- | render item
+renderItem :: Color     -- ^ item color
+           -> Item      -- ^ item to render
+           -> Picture   -- ^ item rendered
+renderItem col item = translate x y
+                        $ color col
+                        $ rectangleSolid itemWidth itemHeight
+                        where
+                          (x, y) = itemPos item
+
 -- | render ball
 renderBall :: Color       -- ^ Ball's color
        -> Radius          -- ^ Ball's radius
-       -> (Float, Float)  -- ^ Ball's center
+       -> Position  -- ^ Ball's center
        -> Picture         -- ^ Picture of this ball
 renderBall col radius (x, y) = translate x y
                              $ color col
@@ -109,12 +119,14 @@ renderGame game @ Game { gameState = Playing } library = pictures
       , renderWall wallColor gameWidth wallWidth wallUpPos
       , renderWall wallColor wallWidth gameHeight wallLeftPos
       , renderWall wallColor wallWidth gameHeight wallRightPos
-      , renderPaddle paddleColor paddleWidth paddleHeight (paddleLoc $ paddle game)
+      , renderPaddle paddleColor paddleW paddleHeight (paddleLoc $ paddle game)
       , pictures . fmap (renderBrick $ brickImg library) $ bricks game
       , pictures . fmap (renderDot white 2) $ ballDots game
+      , pictures . fmap (renderItem white) $ items game
       , renderScore (gameScore game)
       ]
       where
         wallColor = blue
         brickColor = yellow
         paddleColor = cyan
+        paddleW = paddleWidth $ paddle game
